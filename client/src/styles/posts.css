@@ -161,8 +161,8 @@
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
   }
-  .post_title {
-    font-size: 16px;
+  .post_title h4{
+    font-size: 18px;
     font-weight: 500;
     margin-top: 4px;
   }
