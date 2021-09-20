@@ -1,0 +1,345 @@
+.post_heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px 0px 20px;
+}
+
+.post_heading button {
+  font: 2rem;
+  margin: 20px 10px 10px 0;
+  cursor: pointer;
+  font: 2rem;
+  margin: 48px 10px 43px 0;
+  cursor: pointer;
+  background-color: #489cb1;
+  border: none;
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.posts {
+  background-color: rgb(250, 249, 249);
+  flex: auto;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 20px;
+  /* background-color: rgba(32, 1, 44, 0.09); */
+  /* border-radius: 1rem; */
+}
+
+.post {
+  margin: 0px 25px 40px 25px;
+  /* color: #444444; */
+  /* width: 400px; */
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: 44%;
+  height: auto;
+  /* line-height: 36.5px; */
+}
+
+.post_img {
+  width: 100%;
+  height: 209px;
+  margin-bottom: 15px;
+  object-fit: cover;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.post_info {
+  /* text-align: center; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Nunito", sans-serif;
+  /* overflow:hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; */
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post_title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 15px;
+  text-align: center;
+  /* color: #444444; */
+}
+
+.author {
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  margin-top: -2px;
+}
+
+.post_desc {
+  font-size: 16px;
+  /* color: #444444; */
+  line-height: 36.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.btnn {
+  display: flex;
+  align-content: center;
+  font: 2rem;
+  margin: 48px 10px 43px 0;
+  cursor: pointer;
+  background-color: #489cb1;
+  border: none;
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 2.5px;
+  margin-top: 51px;
+}
+
+.btnn:hover {
+  content: "";
+  position: relative;
+  background-color: rgb(32, 78, 119);
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 1042px) {
+  .post {
+    margin: 0px 25px 40px 25px;
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 43%;
+    height: auto;
+  }
+}
+
+@media (max-width: 893px) {
+  .post {
+    margin: 0px 25px 40px 25px;
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 42%;
+    height: auto;
+  }
+}
+
+@media (max-width: 781px) {
+  .post {
+    margin: 0px 25px 40px 25px;
+
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 40%;
+    height: auto;
+  }
+
+  .post_img {
+    width: 106%;
+    height: 145px;
+    margin-bottom: 12px;
+    object-fit: cover;
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  .post_desc {
+    font-size: 12px;
+    line-height: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+  .post_title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .btnn {
+    font-size: 0.8rem;
+    height: 20x;
+    width: 75px;
+  }
+}
+
+@media (max-width: 625px) {
+  .post {
+    margin: 0px 25px 40px 25px;
+
+    margin-top: 41px;
+    margin-bottom: 20px;
+    width: 38%;
+    height: auto;
+  }
+  .btnnnn {
+    font-size: 0.56rem;
+    height: 5x;
+    width: 55px;
+    /* margin-top: 53px; */
+  }
+}
+
+@media (max-width: 520px) {
+  .post_heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 20px 0px 20px;
+  }
+  .post {
+    margin: 40px 25px 40px 45px;
+    margin-top: 29px;
+    margin-bottom: 24px;
+    width: 44%;
+    height: auto;
+  }
+  .post_img {
+    width: 180%;
+    height: 160px;
+    margin-bottom: 15px;
+    object-fit: cover;
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  .post_info {
+    width: 180%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Nunito", sans-serif;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .post_title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 5px;
+  }
+
+  .author {
+    margin-bottom: 14px;
+    margin-top: -2px;
+  }
+
+  .post_desc {
+    font-size: 12px;
+    line-height: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+
+  .post_heading .btnnnn {
+    font: 2rem !important;
+    margin: 20px 10px 10px 0;
+    cursor: pointer;
+    font: 2rem;
+    margin: 48px 10px 43px 0;
+    cursor: pointer;
+    background-color: #489cb1;
+    border: none;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .btnn {
+    font-size: 0.56rem;
+    height: 5x;
+    width: 55px;
+    /* margin-top: 53px; */
+  }
+}
+
+@media (max-width: 400px) {
+  .post_heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 25px 0px 25px;
+  }
+  .post {
+    margin: 0px 25px 40px 44px;
+    margin-top: 35px;
+    margin-bottom: 25px;
+    width: 44%;
+    height: auto;
+  }
+  .post_img {
+    width: 170%;
+    height: 150px;
+    margin-bottom: 15px;
+    object-fit: cover;
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+  .post_info {
+    width: 180%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Nunito", sans-serif;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .post_title {
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  .author {
+    margin-bottom: 11px;
+    margin-top: -2px;
+  }
+
+  .post_desc {
+    font-size: 12px;
+    line-height: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+
+  .post_heading .btnnnn {
+    font: 2rem !important;
+    margin: 20px 10px 10px 0;
+    cursor: pointer;
+    font: 2rem;
+    margin: 48px 10px 43px 0;
+    cursor: pointer;
+    background-color: #489cb1;
+    border: none;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  .btnn {
+    font-size: 0.56rem;
+    height: 5x;
+    width: 55px;
+    /* margin-top: 53px; */
+  }
+}
