@@ -1,28 +1,23 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    // confpassword: {
-    //   type: String,
-    //   required: true,
-    // },
-
-    // posts: { type: mongoose.Schema.Types.ObjectId, ref: "POST" },
+ {
+  name: {
+   type: String,
+   required: true,
+   unique: true,
   },
-  { timestamps: true }
+  email: {
+   type: String,
+   required: true,
+  },
+  password: {
+   type: String,
+   required: true,
+  },
+  // posts: { type: mongoose.Schema.Types.ObjectId, ref: "POST" },
+ },
+ { timestamps: true }
 );
 
 // UserSchema.virtual("posts", {
