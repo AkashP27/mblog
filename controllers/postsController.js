@@ -1,39 +1,47 @@
-const router = require("express").Router();
 const Post = require("../models/Post");
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
 const path = require("path");
-const cors = require("cors");
 
-const fs = require("fs");
+// const fs = require("fs");
 
-router.use(cors());
-
-router.post("/", upload.single("image"), async (req, res) => {
- try {
-  const result = await cloudinary.uploader.upload(req.file.path);
-  // console.log(req.file.path);
-  const newPost = new Post({
-   name: req.body.name,
-   title: req.body.title,
-   desc: req.body.desc,
-   imageURL: result.secure_url,
-   cloudinary_id: result.public_id,
-  });
-
+exports.postForm =
+ (upload.single("image"),
+ async (req, res) => {
   try {
-   const savedPost = await newPost.save();
-   res.status(200).json(savedPost);
-  } catch (err) {
-   res.status(500).json(err);
-  }
- } catch (err) {
-  console.log(err);
- }
-});
+   const result = await cloudinary.uploader.upload(req.file.path);
+   // console.log(req.file.path);
+   const newPost = new Post({
+    name: req.body.name,
+    title: req.body.title,
+    desc: req.body.desc,
+    imageURL: result.secure_url,
+    cloudinary_id: result.public_id,
+   });
 
-//   UPDATE
-router.put("/:id", async (req, res) => {
+   try {
+    const savedPost = await newPost.save();
+    res.status(200).json(savedPost);
+   } catch (err) {
+    res.status(500).json(err);
+   }
+  } catch (err) {
+   console.log(err);
+  }
+ });
+
+exports.getForm = async (req, res) => {
+ try {
+  const post = await Post.find().sort({ _id: -1 });
+  // const post = await Post.find().populate("uploadedBy");
+  // console.log(post);
+  res.status(200).json(post);
+ } catch (err) {
+  res.status(500).json(err);
+ }
+};
+
+exports.updateForm = async (req, res) => {
  try {
   const post = await Post.findById(req.params.id);
   if (post.name === req.body.name) {
@@ -55,10 +63,9 @@ router.put("/:id", async (req, res) => {
  } catch (err) {
   res.status(500).json(err);
  }
-});
+};
 
-//  DELETE
-router.delete("/:id", async (req, res) => {
+exports.deleteForm = async (req, res) => {
  try {
   const post = await Post.findById(req.params.id);
   if (post.name === req.body.name) {
@@ -75,10 +82,9 @@ router.delete("/:id", async (req, res) => {
  } catch (err) {
   res.status(500).json(err);
  }
-});
+};
 
-//  GET
-router.get("/:id", async (req, res) => {
+exports.getForm = async (req, res) => {
  try {
   // const post = await Post.findById(req.params.id).populate("uploadedBy");
   const post = await Post.findById(req.params.id);
@@ -87,18 +93,4 @@ router.get("/:id", async (req, res) => {
  } catch (err) {
   res.status(500).json(err);
  }
-});
-
-//  GET ALL POSTS
-router.get("/", async (req, res) => {
- try {
-  const post = await Post.find().sort({ _id: -1 });
-  // const post = await Post.find().populate("uploadedBy");
-  // console.log(post);
-  res.status(200).json(post);
- } catch (err) {
-  res.status(500).json(err);
- }
-});
-
-module.exports = router;
+};
