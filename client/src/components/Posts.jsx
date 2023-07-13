@@ -6,22 +6,22 @@ import "../styles/posts.css";
 // import "./index.css";
 
 const Posts = ({ posts }) => {
-  return (
-    <>
-      <div className="post_heading max_width m_auto">
-        <h1>Posts</h1>
-        <NavLink className="btnn" to="/write">
-          Create Post
-        </NavLink>
-      </div>
+	return (
+		<>
+			<div className="post_heading max_width m_auto">
+				<h1>Posts</h1>
+				<NavLink className="btnn" to="/write">
+					Create Post
+				</NavLink>
+			</div>
 
-      <div className="posts max_width m_auto">
-        {posts.map((p) => (
-          <Post post={p} />
-        ))}
-      </div>
-    </>
-  );
+			<div className="posts max_width m_auto">
+				{posts?.map((p) => (
+					<Post post={p} key={p.id} />
+				))}
+			</div>
+		</>
+	);
 };
 
 export default Posts;
