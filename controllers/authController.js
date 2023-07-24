@@ -52,3 +52,40 @@ exports.loginUser = async (req, res) => {
 		console.log(err);
 	}
 };
+
+exports.protect = async (req, res, next) => {
+	let token;
+	let decoded;
+	if (
+		req.headers.authorization &&
+		req.headers.authorization.startsWith("Bearer")
+	) {
+		token = req.headers.authorization.split(" ")[1];
+	}
+	// console.log(token);
+
+	if (!token) {
+		return res
+			.status(401)
+			.json("Token is not present, you're not authenticated");
+	}
+
+	try {
+		decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
+		// console.log(decoded);
+	} catch (err) {
+		return res.status(401).json("Invalid token");
+	}
+
+	//check if user still exists
+	const freshUser = await User.findById(decoded.id);
+	if (!freshUser) {
+		return res
+			.status(401)
+			.json("User belonging to this token does no longer exist");
+	}
+
+	req.user = freshUser;
+	// console.log(req.user._id);
+	next();
+};
