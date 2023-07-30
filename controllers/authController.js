@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
@@ -8,7 +10,7 @@ const signToken = (id, name) => {
 	});
 };
 
-exports.registerForm = async (req, res) => {
+exports.registerUser = async (req, res) => {
 	try {
 		const salt = await bcrypt.genSalt(10);
 		const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -88,4 +90,51 @@ exports.protect = async (req, res, next) => {
 	req.user = freshUser;
 	// console.log(req.user._id);
 	next();
+};
+
+exports.forgotPassword = async (req, res, next) => {
+	// console.log(req.body.email);
+	// 1) Get user based on provided email
+	const user = await User.findOne({ email: req.body.email });
+
+	if (!user) {
+		return res.status(404).json("User does not exist with this email address.");
+		// return next(
+		// 	res.status(404).json("User does not exist with this email address.")
+		// );
+	}
+	// 2) Generate random reset token
+	const resetToken = crypto.randomBytes(32).toString("hex");
+	user.passwordResetToken = crypto
+		.createHash("sha256")
+		.update(resetToken)
+		.digest("hex");
+
+	// console.log({ resetToken }, user.passwordResetToken);
+
+	user.passwordResetExpires = Date.now() + 10 * 60 * 1000; //10mins
+	await user.save({ validateBeforeSave: false });
+
+	// 3) Send token to user's email
+	const resetURL = `https://mblog-akash.netlify.app/reset-password/${resetToken}`;
+
+	const message = `Forgot your password? Enter your new password here: ${resetURL}\nIf you didn't forget your password, please ignore this email`;
+
+	try {
+		await sendEmail({
+			email: user.email,
+			subject: "Your password reset token (valid for 10mins)",
+			message,
+		});
+
+		res.status(200).json("Token sent to email");
+	} catch (err) {
+		user.passwordResetToken = undefined;
+		user.passwordResetExpires = undefined;
+		await user.save({ validateBeforeSave: false });
+
+		return res
+			.status(500)
+			.res("There was an error sending the email. Try again later.");
+	}
 };

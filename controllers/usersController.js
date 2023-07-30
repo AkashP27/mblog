@@ -59,3 +59,13 @@ exports.deleteUser = async (req, res) => {
 		res.status(401).json("You can delete only your account");
 	}
 };
+
+exports.getUsersPosts = async (req, res) => {
+	// console.log(req.user.name);
+	try {
+		const post = await Post.find({ name: req.user.name }).sort({ _id: -1 });
+		res.status(200).json(post);
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
