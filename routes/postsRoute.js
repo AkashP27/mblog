@@ -4,12 +4,15 @@ const cors = require("cors");
 
 router.use(cors());
 
-router.route("/").post(postsController.postForm);
-router.route("/").get(postsController.getForm);
+router
+	.route("/")
+	.get(postsController.getAllPost)
+	.post(postsController.createPost);
+
 router
 	.route("/:id")
-	.get(postsController.getForm)
-	.put(postsController.updateForm)
-	.delete(postsController.deleteForm);
+	.get(postsController.getSinglePost)
+	.put(authController.protect, postsController.updatePost)
+	.delete(authController.protect, postsController.deletePost);
 
 module.exports = router;
