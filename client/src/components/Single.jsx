@@ -4,6 +4,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import ReactQuill from "react-quill";
+import jwt_decode from "jwt-decode";
 import "react-quill/dist/quill.snow.css";
 // import axios from "axios";
 import "../styles/single.css";
@@ -15,7 +16,13 @@ const Single = () => {
 	const path = location.pathname.split("/")[2];
 	const [post, setPost] = useState("");
 
-	const { user } = useContext(Context);
+	const { token } = useContext(Context);
+
+	if (token) {
+		var decoded = jwt_decode(token);
+		var nameOfUser = decoded.name;
+	}
+
 	// eslint-disable-next-line no-unused-vars
 	const [name, setName] = useState("");
 	const [title, setTitle] = useState("");
@@ -53,21 +60,48 @@ const Single = () => {
 	const handleDelete = async () => {
 		let deletepost = window.confirm("Are you sure to delete the post?");
 		if (deletepost) {
-			await axiosInstance.delete(`/posts/${post._id}`, {
-				data: { name: user.name },
-			});
-			history.push("/");
+			try {
+				await axiosInstance.delete(
+					`/posts/${post._id}`,
+					// {
+					// 	data: { name: decoded.name },
+					// },
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				);
+
+				// alert("Post deleted successfully");
+				history.push("/");
+			} catch (err) {
+				alert("Could not delete the post");
+			}
 		}
 	};
 
 	const handleUpdate = async () => {
-		await axiosInstance.put(`/posts/${post._id}`, {
-			name: user.name,
-			title,
-			desc,
-		});
-		// window.location.reload();
-		setUpdate(false);
+		try {
+			await axiosInstance.put(
+				`/posts/${post._id}`,
+				{
+					// name: user,
+					title,
+					desc,
+				},
+				{
+					headers: {
+						authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			// window.location.reload();
+			setUpdate(false);
+			// alert("Your Post updated Successfully");
+		} catch (err) {
+			alert("Sorry! Couldn't update'");
+		}
 	};
 
 	// console.log(path);
@@ -97,7 +131,7 @@ const Single = () => {
 					) : (
 						<h1 className="singlePostTitle ">
 							{title}
-							{post.name === user.name && (
+							{post.name === nameOfUser && (
 								<div className="singlePostEdit">
 									<i
 										className="singlePostIcon fas fa-edit"

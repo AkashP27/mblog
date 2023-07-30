@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import ReactQuill from "react-quill";
+import jwt_decode from "jwt-decode";
 import "react-quill/dist/quill.snow.css";
 import "../index.css";
 import "../styles/write.css";
@@ -36,8 +37,11 @@ const Write = () => {
 
 		try {
 			const res = await axiosInstance.post("/posts/", data);
+			// alert("Post created successfully");
 			window.location.replace("/post/" + res.data._id);
-		} catch (err) {}
+		} catch (err) {
+			alert("Sorry! Post was not created");
+		}
 	};
 	//  console.log(res);
 

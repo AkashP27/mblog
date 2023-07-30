@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../context/Context";
 import { useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
@@ -13,13 +13,16 @@ const MyProfile = () => {
 	const [password, setPassword] = useState("");
 	// const [success, setSuccess] = useState(false);
 
-	const { user } = useContext(Context);
-	// console.log(user);
+	const { token, dispatch } = useContext(Context);
+	const decoded = jwt_decode(token);
+
+	const handleLogout = () => {
+		dispatch({ type: "LOGOUT" });
+	};
 
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 		const updatedUser = {
-			userId: user._id,
 			name,
 			email,
 			password,
@@ -28,26 +31,29 @@ const MyProfile = () => {
 		try {
 			let updateacc = window.confirm("Are you sure to update the account?");
 			if (updateacc) {
-				{
-					await axiosInstance.put("/users/" + user._id, updatedUser);
-					alert("Account has been updated. Please Login again...!");
-					history.push("/");
-				}
+				await axiosInstance.put(`/users/${decoded.id}`, updatedUser, {
+					headers: { authorization: `Bearer ${token}` },
+				});
+
+				// localStorage.setItem("token", JSON.stringify(res.data.token));
+				alert("Account has been updated. Please Login again...!");
+				history.push("/");
+				handleLogout();
 			}
-		} catch (err) {}
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const handleDelete = async (e) => {
 		let deleteacc = window.confirm("Are you sure to delete the account?");
 		if (deleteacc) {
-			{
-				await axiosInstance.delete(`/users/${user._id}`, {
-					data: { userId: user._id },
-					name: user.name,
-				});
-				alert("Account has been deleted...!");
-				history.push("/");
-			}
+			await axiosInstance.delete(`/users/${decoded.id}`, {
+				headers: { authorization: `Bearer ${token}` },
+			});
+			alert("Account has been deleted...!");
+			history.push("/");
+			handleLogout();
 		}
 	};
 
