@@ -3,6 +3,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const sendEmail = require("../utils/email");
 
 const signToken = (id, name) => {
 	return jwt.sign({ id, name }, process.env.JWT_SECRET_KEY, {
@@ -137,4 +138,31 @@ exports.forgotPassword = async (req, res, next) => {
 			.status(500)
 			.res("There was an error sending the email. Try again later.");
 	}
+};
+
+exports.resetPassword = async (req, res, next) => {
+	// 1) Get user based on token
+	const hashedToken = crypto
+		.createHash("sha256")
+		.update(req.params.token)
+		.digest("hex");
+
+	const user = await User.findOne({
+		passwordResetToken: hashedToken,
+		passwordResetExpires: { $gt: Date.now() },
+	});
+
+	// 2) If token is not expired and user exists, set new password
+	if (!user) {
+		// return next(new Error("Token is invalid or expired", 400));
+		return res.status(400).json("Token is invalid or expired");
+	}
+
+	const hashedPass = await bcrypt.hash(req.body.password, 10);
+
+	user.password = hashedPass;
+	user.passwordResetToken = undefined;
+	user.passwordResetExpires = undefined;
+	await user.save();
+	res.status(200).json("Password Changed successfully");
 };
