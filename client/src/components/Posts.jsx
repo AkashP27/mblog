@@ -3,8 +3,6 @@ import Post from "./Post";
 import { NavLink } from "react-router-dom";
 import "../styles/posts.css";
 
-// import "./index.css";
-
 const Posts = ({ posts }) => {
 	return (
 		<>
@@ -16,8 +14,8 @@ const Posts = ({ posts }) => {
 			</div>
 
 			<div className="posts max_width m_auto">
-				{posts?.map((p) => (
-					<Post post={p} key={p.id} />
+				{posts?.map((p, index) => (
+					<Post post={p} key={index} />
 				))}
 			</div>
 		</>

@@ -11,7 +11,8 @@ const Write = () => {
 	const [file, setFile] = useState(null);
 	const [title, setTitle] = useState("");
 	const [desc, setDesc] = useState("");
-	const { user } = useContext(Context);
+	const { token } = useContext(Context);
+	var decoded = jwt_decode(token);
 
 	const modules = {
 		toolbar: [
@@ -33,7 +34,7 @@ const Write = () => {
 		data.append("image", file);
 		data.append("title", title);
 		data.append("desc", desc);
-		data.append("name", user.name);
+		data.append("name", decoded.name);
 
 		try {
 			const res = await axiosInstance.post("/posts/", data);

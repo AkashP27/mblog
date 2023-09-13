@@ -1,217 +1,212 @@
 .writeForm {
-  position: relative;
-  margin-top: 20px;
-  font-family: "Nunito", sans-serif;
+	position: relative;
+	margin-top: 20px;
+	font-family: "Nunito", sans-serif;
+	padding-bottom: 214px;
 }
 
 .writeImg {
-  margin: 20px 40px 0px 40px;
-  width: 70vw;
-  height: 410px;
-  border-radius: 10px;
-  object-fit: cover;
+	margin: 20px 40px 0px 40px;
+	width: 70vw;
+	height: 410px;
+	border-radius: 10px;
+	object-fit: inherit;
 }
 
 .postimg {
-  /* position: absolute; */
-  margin-top: 50px;
-  display: flex;
-  align-items: baseline;
-  padding-left: 40px;
-  color: #444444;
+	/* position: absolute; */
+	margin-top: 50px;
+	display: flex;
+	align-items: baseline;
+	padding-left: 40px;
+	color: #444444;
 }
 
 .writeFormGroup {
-  /* margin-left: 150px; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	/* margin-left: 150px; */
+	/* display: flex; */
+	align-items: center;
+	justify-content: center;
 }
 
 .writeIcon {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  border: 1.5px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  color: rgb(8, 112, 138);
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	border: 1.5px solid;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 10px;
+	color: rgb(8, 112, 138);
 }
 
 .writeInput {
-  font-size: 30px;
-  border: none;
-  padding: 20px;
-  width: 70vw;
-  margin-right: 39px;
-  margin-left: -24px;
-  /* border-bottom: 1px solid lightgray; */
+	font-size: 30px;
+	border: none;
+	padding: 20px;
+	width: 80vw;
+	margin-right: 0px;
+	margin-left: 0px;
+	/* border-bottom: 1px solid lightgray; */
 }
 
 .writeInput:focus {
-  outline: none;
-  /* border-bottom: none; */
+	outline: none;
+	/* border-bottom: none; */
 }
 
 .writeText {
-  font-size: 18px;
-  height: 100vh;
-  /* border-bottom: 1px solid lightgray; */
+	font-size: 18px;
+	height: 100vh;
+	/* border-bottom: 1px solid lightgray; */
 }
 
 .writeSubmit {
-  /* position: absolute; */
-  margin-left: auto;
-  margin-right: 70px;
-  color: white;
-  background-color: #489cb1;
-  padding: 6px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 17px;
+	/* position: absolute; */
+	margin-left: auto;
+	margin-right: 70px;
+	color: white;
+	background-color: #489cb1;
+	padding: 6px;
+	border: none;
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 17px;
 }
 
 @media (max-width: 770px) {
-  .writeImg {
-    margin: 20px 40px 0px 40px;
-    width: 67vw;
-    height: 300px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  .writeIcon {
-    width: 23px;
-    height: 23px;
-    margin-right: 10px;
-  }
-  .postimg h5 {
-    font-size: 1.2rem;
-  }
-  .writeInput {
-    font-size: 27px;
-    padding: 20px;
-    width: 70vw;
-    margin-right: 39px;
-    margin-left: -24px;
-  }
-  .writeText {
-    font-size: 17px;
- 
-  }
-  .writeSubmit {
-    margin-right: 85px;
-    padding: 4.5px;
-    border-radius: 10px;
-    font-size: 15px;
-  }
+	.writeImg {
+		margin: 20px 40px 0px 40px;
+		width: 67vw;
+		height: 300px;
+		border-radius: 10px;
+		object-fit: cover;
+	}
+	.writeIcon {
+		width: 23px;
+		height: 23px;
+		margin-right: 10px;
+	}
+	.postimg h5 {
+		font-size: 1.2rem;
+	}
+	.writeInput {
+		font-size: 27px;
+		padding: 20px;
+		width: 70vw;
+		margin-right: 39px;
+		margin-left: -24px;
+	}
+	.writeText {
+		font-size: 17px;
+	}
+	.writeSubmit {
+		margin-right: 85px;
+		padding: 4.5px;
+		border-radius: 10px;
+		font-size: 15px;
+	}
 }
 
-
 @media (max-width: 600px) {
-  .writeImg {
-    margin: 20px 40px 0px 40px;
-    width: 67vw;
-    height: 260px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  .writeIcon {
-    width: 21px;
-    height: 21px;
-    margin-right: 10px;
-  }
-  .postimg h5 {
-    font-size: 1.1rem;
-  }
-  .writeInput {
-    font-size: 25px;
-    padding: 18px;
-    width: 70vw;
-    margin-right: 39px;
-    margin-left: -24px;
-  }
-  .writeText {
-    font-size: 15px;
- 
-  }
-  .writeSubmit {
-    margin-right: 60px;
-    padding: 4px;
-    border-radius: 10px;
-    font-size: 12px;
-  }
+	.writeImg {
+		margin: 20px 40px 0px 40px;
+		width: 67vw;
+		height: 260px;
+		border-radius: 10px;
+		object-fit: cover;
+	}
+	.writeIcon {
+		width: 21px;
+		height: 21px;
+		margin-right: 10px;
+	}
+	.postimg h5 {
+		font-size: 1.1rem;
+	}
+	.writeInput {
+		font-size: 25px;
+		padding: 18px;
+		width: 70vw;
+		margin-right: 39px;
+		margin-left: -24px;
+	}
+	.writeText {
+		font-size: 15px;
+	}
+	.writeSubmit {
+		margin-right: 60px;
+		padding: 4px;
+		border-radius: 10px;
+		font-size: 12px;
+	}
 }
 
 @media (max-width: 500px) {
-  .writeImg {
-    margin: 20px 40px 0px 40px;
-    width: 65vw;
-    height: 230px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  .writeIcon {
-    width: 19px;
-    height:19px;
-    margin-right: 10px;
-  }
-  .postimg h5 {
-    font-size: 1rem;
-  }
-  .writeInput {
-    font-size: 22px;
-    padding: 17px;
-    width: 70vw;
-    margin-right: 39px;
-    margin-left: -24px;
-  }
-  .writeText {
-    font-size: 13px;
- 
-  }
-  .writeSubmit {
-    margin-right: 40px;
-    padding: 3.5px;
-    border-radius: 10px;
-    font-size: 10px;
-  }
+	.writeImg {
+		margin: 20px 40px 0px 40px;
+		width: 65vw;
+		height: 230px;
+		border-radius: 10px;
+		object-fit: cover;
+	}
+	.writeIcon {
+		width: 19px;
+		height: 19px;
+		margin-right: 10px;
+	}
+	.postimg h5 {
+		font-size: 1rem;
+	}
+	.writeInput {
+		font-size: 22px;
+		padding: 17px;
+		width: 70vw;
+		margin-right: 39px;
+		margin-left: -24px;
+	}
+	.writeText {
+		font-size: 13px;
+	}
+	.writeSubmit {
+		margin-right: 40px;
+		padding: 3.5px;
+		border-radius: 10px;
+		font-size: 10px;
+	}
 }
 
 @media (max-width: 400px) {
-  .writeImg {
-    margin: 20px 40px 0px 40px;
-    width: 65vw;
-    height: 220px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  .writeIcon {
-    width: 18px;
-    height:18px;
-    margin-right: 10px;
-  }
-  .postimg h5 {
-    font-size: 1rem;
-  }
-  .writeInput {
-    font-size: 21px;
-    padding: 16px;
-    width: 70vw;
-    margin-right: 39px;
-    margin-left: -24px;
-  }
-  .writeText {
-    font-size: 12px;
- 
-  }
-  .writeSubmit {
-    margin-right: 30px;
-    padding: 3.5px;
-    border-radius: 10px;
-    font-size: 10px;
-  }
+	.writeImg {
+		margin: 20px 40px 0px 40px;
+		width: 65vw;
+		height: 220px;
+		border-radius: 10px;
+		object-fit: cover;
+	}
+	.writeIcon {
+		width: 18px;
+		height: 18px;
+		margin-right: 10px;
+	}
+	.postimg h5 {
+		font-size: 1rem;
+	}
+	.writeInput {
+		font-size: 21px;
+		padding: 16px;
+		width: 70vw;
+		margin-right: 39px;
+		margin-left: -24px;
+	}
+	.writeText {
+		font-size: 12px;
+	}
+	.writeSubmit {
+		margin-right: 30px;
+		padding: 3.5px;
+		border-radius: 10px;
+		font-size: 10px;
+	}
 }
-

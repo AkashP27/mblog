@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import "../styles/posts.css";
 
 const Post = ({ post }) => {
-	// const PublicFolder = `${post.imageURL}`;
 	return (
 		<>
 			<div className="post">
@@ -26,7 +25,6 @@ const Post = ({ post }) => {
 							className="post_desc"
 							dangerouslySetInnerHTML={{ __html: post.desc }}
 						/>
-						{/* <span className="post_desc">{post.desc}</span> */}
 					</div>
 				</Link>
 			</div>

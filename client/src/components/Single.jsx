@@ -1,4 +1,3 @@
-// import "./index.css";
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Context } from "../context/Context";
@@ -6,7 +5,6 @@ import { axiosInstance } from "../config";
 import ReactQuill from "react-quill";
 import jwt_decode from "jwt-decode";
 import "react-quill/dist/quill.snow.css";
-// import axios from "axios";
 import "../styles/single.css";
 
 const Single = () => {
@@ -46,10 +44,7 @@ const Single = () => {
 	useEffect(() => {
 		const getPost = async () => {
 			const res = await axiosInstance.get("/posts/" + path);
-			// console.log(path);
-
 			setPost(res.data);
-			//  console.log(res.data.imageURL);
 			setName(res.data.name);
 			setTitle(res.data.title);
 			setDesc(res.data.desc);
@@ -61,17 +56,11 @@ const Single = () => {
 		let deletepost = window.confirm("Are you sure to delete the post?");
 		if (deletepost) {
 			try {
-				await axiosInstance.delete(
-					`/posts/${post._id}`,
-					// {
-					// 	data: { name: decoded.name },
-					// },
-					{
-						headers: {
-							authorization: `Bearer ${token}`,
-						},
-					}
-				);
+				await axiosInstance.delete(`/posts/${post._id}`, {
+					headers: {
+						authorization: `Bearer ${token}`,
+					},
+				});
 
 				// alert("Post deleted successfully");
 				history.push("/");
@@ -82,11 +71,11 @@ const Single = () => {
 	};
 
 	const handleUpdate = async () => {
+		console.log(desc);
 		try {
 			await axiosInstance.put(
 				`/posts/${post._id}`,
 				{
-					// name: user,
 					title,
 					desc,
 				},

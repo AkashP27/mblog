@@ -2,7 +2,6 @@ import React, { useState, useRef, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
-// import "./index.css";
 import "../styles/login.css";
 
 const Login = () => {
