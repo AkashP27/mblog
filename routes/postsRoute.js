@@ -1,13 +1,12 @@
 const router = require("express").Router();
+const authController = require("./../controllers/authController");
 const postsController = require("../controllers/postsController");
-const cors = require("cors");
-
-router.use(cors());
+const upload = require("../utils/multer");
 
 router
 	.route("/")
 	.get(postsController.getAllPost)
-	.post(postsController.createPost);
+	.post(upload.single("image"), postsController.createPost);
 
 router
 	.route("/:id")

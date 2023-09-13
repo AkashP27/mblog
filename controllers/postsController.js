@@ -1,34 +1,28 @@
 const Post = require("../models/Post");
 const cloudinary = require("../utils/cloudinary");
-const upload = require("../utils/multer");
-const path = require("path");
 
-// const fs = require("fs");
+exports.createPost = async (req, res) => {
+	try {
+		const result = await cloudinary.uploader.upload(req.file.path);
+		// console.log(req.file.path);
+		const newPost = new Post({
+			name: req.body.name,
+			title: req.body.title,
+			desc: req.body.desc,
+			imageURL: result.secure_url,
+			cloudinary_id: result.public_id,
+		});
 
-exports.createPost =
-	(upload.single("image"),
-	async (req, res) => {
 		try {
-			const result = await cloudinary.uploader.upload(req.file.path);
-			// console.log(req.file.path);
-			const newPost = new Post({
-				name: req.body.name,
-				title: req.body.title,
-				desc: req.body.desc,
-				imageURL: result.secure_url,
-				cloudinary_id: result.public_id,
-			});
-
-			try {
-				const savedPost = await newPost.save();
-				res.status(200).json(savedPost);
-			} catch (err) {
-				res.status(500).json(err);
-			}
+			const savedPost = await newPost.save();
+			res.status(200).json(savedPost);
 		} catch (err) {
-			console.log(err);
+			res.status(500).json(err);
 		}
-	});
+	} catch (err) {
+		console.log(err);
+	}
+};
 
 exports.getAllPost = async (req, res) => {
 	try {
@@ -42,9 +36,10 @@ exports.getAllPost = async (req, res) => {
 };
 
 exports.updatePost = async (req, res) => {
+	console.log(req.body.desc);
 	try {
 		const post = await Post.findById(req.params.id);
-		if (post.name === req.body.name) {
+		if (post.name === req.user.name) {
 			try {
 				const updatedPost = await Post.findByIdAndUpdate(
 					req.params.id,
