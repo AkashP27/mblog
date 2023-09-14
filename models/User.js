@@ -5,24 +5,30 @@ const UserSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
-			required: true,
+			required: [true, "Name is required"],
 			unique: true,
 		},
 		email: {
 			type: String,
-			required: true,
+			required: [true, "Email is required"],
 			validate: [validator.isEmail, "Please provide a valid email"],
+			unique: true,
 		},
 		password: {
 			type: String,
-			required: true,
-			minlength: 6,
+			required: [true, "Please provide a password"],
+			minlength: [6, "Password must be at least 6 characters"],
+			select: false,
 		},
 		passwordResetToken: {
 			type: String,
 		},
 		passwordResetExpires: Date,
-		// posts: { type: mongoose.Schema.Types.ObjectId, ref: "POST" },
+		active: {
+			type: Boolean,
+			default: true,
+			select: false,
+		},
 	},
 	{ timestamps: true }
 );
