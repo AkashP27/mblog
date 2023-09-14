@@ -1,71 +1,116 @@
 const User = require("../models/User");
 const Post = require("../models/Post");
-const bcrypt = require("bcrypt");
+const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 
-exports.getUser = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
-		const { password, ...others } = user._doc;
-		res.status(200).json(others);
-	} catch (err) {
-		res.status(500).json(err);
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+	const users = await User.find().sort({ id: -1 }).explain();
+
+	if (!users) {
+		return next(new AppError("Users not found", 404));
 	}
-};
+	res.status(200).json({
+		status: "success",
+		results: users.length,
+		data: {
+			users,
+		},
+	});
+});
 
-exports.updateUser = async (req, res) => {
-	const id1 = JSON.stringify(req.user._id);
-	const id2 = JSON.stringify(req.params.id);
+exports.getAllActiveUsers = catchAsync(async (req, res, next) => {
+	const users = await User.find({ active: true }).sort({ id: -1 });
 
-	if (id1 === id2) {
-		if (req.body.password) {
-			const salt = await bcrypt.genSalt(10);
-			req.body.password = await bcrypt.hash(req.body.password, salt);
+	if (!users) {
+		return next(new AppError("Users not found", 404));
+	}
+	res.status(200).json({
+		status: "success",
+		results: users.length,
+		data: {
+			users,
+		},
+	});
+});
+
+exports.getUser = catchAsync(async (req, res, next) => {
+	const user = await User.findById(req.params.id);
+
+	if (!user) {
+		return next(new AppError("Couldn't find user with that ID", 404));
+	}
+
+	res.status(200).json({
+		status: "success",
+		data: {
+			user,
+		},
+	});
+});
+
+exports.updateUser = catchAsync(async (req, res, next) => {
+	if (req.body.password) {
+		return next(new AppError("This route is not for password update", 400));
+	}
+
+	const { name, email } = req.body;
+
+	// if (!name || !email) {
+	// 	return next(new AppError("Fields cannot be empty", 400));
+	// }
+
+	if (JSON.stringify(req.user._id) !== JSON.stringify(req.params.id)) {
+		return next(new AppError("You can update only your account", 401));
+	}
+
+	const updatedUser = await User.findByIdAndUpdate(
+		req.params.id,
+		{
+			$set: req.body,
+		},
+		{
+			new: true,
+			runValidators: true,
 		}
-		try {
-			const updatedUser = await User.findByIdAndUpdate(
-				req.params.id,
-				{
-					$set: req.body,
-				},
-				{ new: true }
-			);
+	);
 
-			res.status(200).json({ updatedUser });
-		} catch (err) {
-			res.status(500).json(err);
-		}
-	} else {
-		res.status(401).json("You can update only your account");
-	}
-};
+	res.status(200).json({
+		status: "success",
+		data: {
+			updatedUser,
+		},
+	});
+});
 
-exports.deleteUser = async (req, res) => {
-	const id1 = JSON.stringify(req.user._id);
-	const id2 = JSON.stringify(req.params.id);
-	if (id1 === id2) {
-		try {
-			const user = await User.findById(req.params.id);
-			try {
-				await Post.deleteMany({ name: user.name });
-				await User.findByIdAndDelete(req.params.id);
-				res.status(200).json("User has been deleted...");
-			} catch (err) {
-				res.status(500).json(err);
-			}
-		} catch (err) {
-			res.status(500).json("User not found");
-		}
-	} else {
-		res.status(401).json("You can delete only your account");
+exports.deleteUser = catchAsync(async (req, res, next) => {
+	if (JSON.stringify(req.user._id) !== JSON.stringify(req.params.id)) {
+		return next(new AppError("You can delete only your account", 401));
 	}
-};
 
-exports.getUsersPosts = async (req, res) => {
-	// console.log(req.user.name);
-	try {
-		const post = await Post.find({ name: req.user.name }).sort({ _id: -1 });
-		res.status(200).json(post);
-	} catch (err) {
-		res.status(500).json(err);
+	await User.findByIdAndUpdate(req.params.id, { active: false });
+
+	// await Post.deleteMany({ uploadedBy: user._id });
+	// await User.findByIdAndDelete(req.params.id);
+	res.status(204).json({
+		status: "success",
+		data: null,
+	});
+});
+
+exports.getUserPosts = catchAsync(async (req, res, next) => {
+	if (JSON.stringify(req.user._id) !== JSON.stringify(req.params.id)) {
+		return next(new AppError("You can access only your posts", 401));
 	}
-};
+
+	const posts = await Post.find({ uploadedBy: req.params.id }).sort({
+		_id: -1,
+	});
+
+	res.status(200).json({
+		status: "success",
+		results: posts.length,
+		data: {
+			posts,
+		},
+	});
+});

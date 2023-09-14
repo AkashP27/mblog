@@ -1,91 +1,118 @@
 const Post = require("../models/Post");
+const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 const cloudinary = require("../utils/cloudinary");
 
-exports.createPost = async (req, res) => {
-	try {
-		const result = await cloudinary.uploader.upload(req.file.path);
-		// console.log(req.file.path);
-		const newPost = new Post({
-			name: req.body.name,
-			title: req.body.title,
-			desc: req.body.desc,
-			imageURL: result.secure_url,
-			cloudinary_id: result.public_id,
-		});
-
-		try {
-			const savedPost = await newPost.save();
-			res.status(200).json(savedPost);
-		} catch (err) {
-			res.status(500).json(err);
-		}
-	} catch (err) {
-		console.log(err);
+exports.createPost = catchAsync(async (req, res, next) => {
+	if (!req.file) {
+		return next(new AppError(`Please upload a file`, 500));
 	}
-};
+	// console.log(req.file);
 
-exports.getAllPost = async (req, res) => {
-	try {
-		const post = await Post.find().sort({ _id: -1 });
-		// const post = await Post.find().populate("uploadedBy");
-		// console.log(post);
-		res.status(200).json(post);
-	} catch (err) {
-		res.status(500).json(err);
+	const result = await cloudinary.uploader.upload(req.file.path);
+	const newPost = new Post({
+		title: req.body.title,
+		desc: req.body.desc,
+		imageURL: result.secure_url,
+		cloudinary_id: result.public_id,
+		uploadedBy: req.body.uploadedBy,
+	});
+
+	const savedPost = await newPost.save();
+	res.status(201).json({
+		status: "success",
+		data: {
+			post: savedPost,
+		},
+	});
+});
+
+exports.getAllPost = catchAsync(async (req, res, next) => {
+	const posts = await Post.find(query).sort("-createdAt");
+	// const posts = await Post.find(query).sort({ _id: -1 }).explain();
+
+	if (!posts) {
+		return next(new AppError("No posts found", 404));
 	}
-};
 
-exports.updatePost = async (req, res) => {
-	try {
-		const post = await Post.findById(req.params.id);
-		if (post.name === req.user.name) {
-			try {
-				const updatedPost = await Post.findByIdAndUpdate(
-					req.params.id,
-					{
-						$set: req.body,
-					},
-					{ new: true }
-				);
-				res.status(200).json(updatedPost);
-			} catch (error) {
-				res.status(500).json(error);
-			}
-		} else {
-			res.status(401).json("you can update only your post");
-		}
-	} catch (err) {
-		res.status(500).json(err);
+	res.status(200).json({
+		status: "success",
+		results: posts.length,
+		data: {
+			posts,
+		},
+	});
+});
+
+exports.getSinglePost = catchAsync(async (req, res, next) => {
+	// const post = await Post.findById(req.params.id).populate("uploadedBy");
+	const post = await Post.findById(req.params.id).populate({
+		path: "uploadedBy",
+		select: "-__v -createdAt -updatedAt",
+	});
+	if (!post) {
+		return next(new AppError("No post found with that ID", 404));
 	}
-};
 
-exports.deletePost = async (req, res) => {
-	try {
-		const post = await Post.findById(req.params.id);
+	res.status(200).json({
+		status: "success",
+		data: {
+			post,
+		},
+	});
+});
 
-		if (post.name === req.user.name) {
-			try {
-				await cloudinary.uploader.destroy(post.cloudinary_id);
-				await post.delete();
-				res.status(200).json("Post has been deleted");
-			} catch (error) {
-				res.status(500).json(error);
-			}
-		} else {
-			res.status(401).json("you can delete only your post");
-		}
-	} catch (err) {
-		res.status(500).json(err);
+exports.updatePost = catchAsync(async (req, res, next) => {
+	// console.log(req.body.desc);
+
+	const post = await Post.findById(req.params.id).populate({
+		path: "uploadedBy",
+		select: "-__v -createdAt -updatedAt",
+	});
+
+	if (!post) {
+		return next(new AppError("No post found for this id", 404));
 	}
-};
 
-exports.getSinglePost = async (req, res) => {
-	try {
-		// const post = await Post.findById(req.params.id).populate("uploadedBy");
-		const post = await Post.findById(req.params.id);
-
-		res.status(200).json(post);
-	} catch (err) {
-		res.status(500).json(err);
+	if (post.uploadedBy.name !== req.user.name) {
+		return next(new AppError("You can update only your post", 405));
 	}
-};
+
+	const updatedPost = await Post.findByIdAndUpdate(
+		req.params.id,
+		{
+			$set: req.body,
+			// $set: { desc: unEscapedStr },
+		},
+		{ new: true }
+	);
+	res.status(200).json({
+		status: "success",
+		data: {
+			updatedPost,
+		},
+	});
+});
+
+exports.deletePost = catchAsync(async (req, res, next) => {
+	// console.log(req.user.name);
+	const post = await Post.findById(req.params.id).populate({
+		path: "uploadedBy",
+		select: "-__v -createdAt -updatedAt",
+	});
+
+	if (!post) {
+		return next(new AppError("No post found for this id", 404));
+	}
+
+	if (post.uploadedBy.name !== req.user.name) {
+		return next(new AppError("You can delete only your post", 405));
+	}
+
+	await cloudinary.uploader.destroy(post.cloudinary_id);
+	await post.delete();
+	res.status(204).json({
+		status: "success",
+		data: null,
+	});
+});

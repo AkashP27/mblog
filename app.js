@@ -26,6 +26,10 @@ app.use("/auth", authRoute);
 app.use("/posts", postRoute);
 app.use("/users", usersRoute);
 
+app.all("*", (req, res, next) => {
+	next(new AppError(`Can't find ${req.originalUrl}`, 404));
+});
+
 const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
 	console.log(`server is running on ${port}`);

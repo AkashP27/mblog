@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const sendEmail = require("../utils/email");
+const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 
 const signToken = (id, name) => {
 	return jwt.sign({ id, name }, process.env.JWT_SECRET_KEY, {
@@ -11,98 +13,151 @@ const signToken = (id, name) => {
 	});
 };
 
-exports.registerUser = async (req, res) => {
-	try {
-		const salt = await bcrypt.genSalt(10);
-		const hashedPass = await bcrypt.hash(req.body.password, salt);
-		// const hashedConfPass = await bcrypt.hash(req.body.confpassword, salt);
+const passwordValidate = (password) => {
+	// console.log("Checking password");
+	const PASSWORD_REGEX =
+		/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/;
 
-		const newUser = new User({
-			name: req.body.name,
-			email: req.body.email,
-			password: hashedPass,
-			// confpassword: hashedConfPass,
-		});
-
-		const user = await newUser.save();
-		res.status(200).json(user);
-	} catch (err) {
-		res.status(500).json(err);
-	}
+	return PASSWORD_REGEX.test(password) ? true : false;
 };
 
-exports.loginUser = async (req, res) => {
-	try {
-		const user = await User.findOne({ email: req.body.email });
+exports.registerUser = catchAsync(async (req, res, next) => {
+	const { name, email, password } = req.body;
 
-		if (!user) {
-			return res.status(400).json("Wrong credentials");
-		}
-
-		const validated = await bcrypt.compare(req.body.password, user.password);
-
-		if (!validated) {
-			return res.status(400).json("Wrong credentials");
-		}
-
-		const token = signToken(user._id, user.name);
-		// console.log(user._docs);
-
-		const { password, ...others } = user._doc;
-		res.status(200).json({ ...others, token });
-	} catch (err) {
-		// res.status(500).json(err);
-		console.log(err);
+	if (!name || !email || !password) {
+		return next(new AppError("Fields cannot be empty", 400));
 	}
-};
 
-exports.protect = async (req, res, next) => {
+	// if (password.length < 6) {
+	// 	return next(new AppError("Password should be atleast 6 characters", 400));
+	// }
+
+	if (!passwordValidate(password)) {
+		return next(
+			new AppError(
+				"Password should be minimum 6 characters, atleast one upper and lower case, one number, one special character",
+				400
+			)
+		);
+	}
+
+	const hashedPass = await bcrypt.hash(password, 10);
+
+	const newUser = new User({
+		name,
+		email,
+		password: hashedPass,
+	});
+
+	const user = await newUser.save();
+	user.password = undefined;
+
+	res.status(201).json({
+		status: "success",
+		data: {
+			user,
+		},
+	});
+});
+
+exports.loginUser = catchAsync(async (req, res, next) => {
+	const user = await User.findOne({
+		email: req.body.email,
+	}).select("+password +active");
+
+	if (!user) {
+		return next(new AppError("Wrong Credentials", 401));
+	}
+
+	if (!user?.active) {
+		return next(
+			new AppError(
+				`User no longer exists. Please contact mblog2728@gmail.com to reactivate account`,
+				401
+			)
+		);
+	}
+
+	const validated = await bcrypt.compare(req.body.password, user.password);
+
+	if (!validated) {
+		return next(new AppError("Wrong Credentials", 401));
+	}
+
+	const token = signToken(user._id, user.name);
+	user.password = undefined;
+
+	res.status(200).json({
+		status: "success",
+		data: {
+			user,
+			token,
+		},
+	});
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
 	let token;
-	let decoded;
+	// let decoded;
 	if (
 		req.headers.authorization &&
 		req.headers.authorization.startsWith("Bearer")
 	) {
 		token = req.headers.authorization.split(" ")[1];
+	} else if (req.cookies.jwt) {
+		token = req.cookies.jwt;
 	}
 	// console.log(token);
-
 	if (!token) {
-		return res
-			.status(401)
-			.json("Token is not present, you're not authenticated");
+		return next(
+			new AppError("Token is not present, you're not authenticated", 401)
+		);
 	}
 
-	try {
-		decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
-		// console.log(decoded);
-	} catch (err) {
-		return res.status(401).json("Invalid token");
-	}
+	// Verification token
+	const decoded = await promisify(jwt.verify)(
+		token,
+		process.env.JWT_SECRET_KEY
+	);
+	// console.log(decoded);
 
 	//check if user still exists
 	const freshUser = await User.findById(decoded.id);
 	if (!freshUser) {
-		return res
-			.status(401)
-			.json("User belonging to this token does no longer exist");
+		return next(
+			new AppError("User belonging to this token does no longer exist", 401)
+		);
 	}
 
 	req.user = freshUser;
 	// console.log(req.user._id);
 	next();
-};
+});
 
-exports.forgotPassword = async (req, res, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
 	// console.log(req.body.email);
+	if (!req.body.email) {
+		return next(new AppError("Please provide an email address", 400));
+	}
+
 	// 1) Get user based on provided email
-	const user = await User.findOne({ email: req.body.email });
+	const user = await User.findOne({
+		email: req.body.email,
+	}).select("+active");
 
 	if (!user) {
-		return res.status(404).json("User does not exist with this email address.");
-		// return next(
-		// 	res.status(404).json("User does not exist with this email address.")
-		// );
+		return next(
+			new AppError("User does not exist with this email address.", 404)
+		);
+	}
+
+	if (!user?.active) {
+		return next(
+			new AppError(
+				`User no longer exists. Please contact mblog2728@gmail.com to reactivate account`,
+				401
+			)
+		);
 	}
 	// 2) Generate random reset token
 	const resetToken = crypto.randomBytes(32).toString("hex");
@@ -128,19 +183,39 @@ exports.forgotPassword = async (req, res, next) => {
 			message,
 		});
 
-		res.status(200).json("Token sent to email");
+		res.status(200).json({
+			status: "success",
+			message: "Token sent to email!",
+		});
 	} catch (err) {
 		user.passwordResetToken = undefined;
 		user.passwordResetExpires = undefined;
 		await user.save({ validateBeforeSave: false });
 
-		return res
-			.status(500)
-			.res("There was an error sending the email. Try again later.");
+		return next(
+			new AppError("There was an error sending email. Please try again later!")
+		);
 	}
-};
+});
 
-exports.resetPassword = async (req, res, next) => {
+exports.resetPassword = catchAsync(async (req, res, next) => {
+	// if (!req.body.password) {
+	// 	return next(new AppError("Please enter your password", 400));
+	// }
+
+	if (!passwordValidate(req.body.password)) {
+		return next(
+			new AppError(
+				"Password should be minimum 6 characters, atleast one upper and lower case, one number, one special character",
+				400
+			)
+		);
+	}
+
+	// if (req.body.password.length < 6) {
+	// 	return next(new AppError("Password should be atleast 6 characters", 400));
+	// }
+
 	// 1) Get user based on token
 	const hashedToken = crypto
 		.createHash("sha256")
@@ -154,8 +229,7 @@ exports.resetPassword = async (req, res, next) => {
 
 	// 2) If token is not expired and user exists, set new password
 	if (!user) {
-		// return next(new Error("Token is invalid or expired", 400));
-		return res.status(400).json("Token is invalid or expired");
+		return next(new AppError("Token is invalid or expired", 400));
 	}
 
 	const hashedPass = await bcrypt.hash(req.body.password, 10);
@@ -164,5 +238,8 @@ exports.resetPassword = async (req, res, next) => {
 	user.passwordResetToken = undefined;
 	user.passwordResetExpires = undefined;
 	await user.save();
-	res.status(200).json("Password Changed successfully");
-};
+	res.status(200).json({
+		status: "success",
+		message: "Password Changed successfully",
+	});
+});
