@@ -117,7 +117,7 @@ exports.forgotPassword = async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	// 3) Send token to user's email
-	const resetURL = `https://mblog-akash.netlify.app/reset-password/${resetToken}`;
+	const resetURL = `${req.protocol}://localhost:3006/reset-password/${resetToken}`;
 
 	const message = `Forgot your password? Enter your new password here: ${resetURL}\nIf you didn't forget your password, please ignore this email`;
 

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const usersController = require("../controllers/usersController");
+const authController = require("./../controllers/authController");
 
 router
 	.route("/:id")

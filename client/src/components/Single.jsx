@@ -65,6 +65,7 @@ const Single = () => {
 				// alert("Post deleted successfully");
 				history.push("/");
 			} catch (err) {
+				console.log(err.response);
 				alert("Could not delete the post");
 			}
 		}

@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { createContext, useReducer, useEffect } from "react";
 import Reducer from "./Reducer";
-import user from "../components/Login";
 
 const INITIAL_STATE = {
 	token: JSON.parse(localStorage.getItem("token")) || null,

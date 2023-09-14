@@ -72,6 +72,10 @@ const Login = () => {
 						<p style={{ color: "black !important" }}>New User?</p>
 						<NavLink to="/register">Register</NavLink>
 					</div>
+					<div className="bottom">
+						<p style={{ color: "black !important" }}>Forgot password? </p>
+						<NavLink to="/forgot-password">Click here</NavLink>
+					</div>
 				</form>
 			</div>
 		</>

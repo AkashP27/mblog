@@ -36,7 +36,6 @@ exports.getAllPost = async (req, res) => {
 };
 
 exports.updatePost = async (req, res) => {
-	console.log(req.body.desc);
 	try {
 		const post = await Post.findById(req.params.id);
 		if (post.name === req.user.name) {
@@ -63,7 +62,8 @@ exports.updatePost = async (req, res) => {
 exports.deletePost = async (req, res) => {
 	try {
 		const post = await Post.findById(req.params.id);
-		if (post.name === req.body.name) {
+
+		if (post.name === req.user.name) {
 			try {
 				await cloudinary.uploader.destroy(post.cloudinary_id);
 				await post.delete();

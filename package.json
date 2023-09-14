@@ -1,31 +1,31 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "engines": {
-    "node": "v14.17.1"
-  },
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.35.0",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
-    "jsonwebtoken": "^9.0.1",
-    "mongoose": "^5.13.16",
-    "multer": "^1.4.4",
-    "nodemailer": "^6.9.4",
-    "nodemon": "^2.0.22",
-    "path": "^0.12.7",
-    "validator": "^13.9.0"
-  },
-  "scripts": {
-    "start": "node app.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+	"name": "api",
+	"version": "1.0.0",
+	"engines": {
+		"node": "v14.17.1"
+	},
+	"description": "",
+	"main": "index.js",
+	"dependencies": {
+		"bcrypt": "^5.1.0",
+		"cloudinary": "^1.35.0",
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.18.2",
+		"express-fileupload": "^1.4.0",
+		"jsonwebtoken": "^9.0.1",
+		"mongoose": "^5.13.16",
+		"multer": "^1.4.4",
+		"nodemailer": "^6.9.4",
+		"nodemon": "^2.0.22",
+		"path": "^0.12.7",
+		"validator": "^13.9.0"
+	},
+	"scripts": {
+		"start": "nodemon app.js",
+		"build": "npm i"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }
