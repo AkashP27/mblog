@@ -6,7 +6,8 @@ const ForgotPassword = () => {
 	const [submitButton, setSubmitButton] = useState(false);
 
 	const [email, setEmail] = useState();
-	const [successMessage, setSuccessMessage] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const [successMessage, setSuccessMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -16,15 +17,18 @@ const ForgotPassword = () => {
 				email,
 			});
 
-			// console.log(res.data);
+			// console.log(res.data.message);
+			setSuccessMessage(res.data.message);
 			setSubmitButton(false);
-			if (res.status === 200) {
-				setEmail("");
-				setSuccessMessage(true);
-			}
+			setEmail("");
+
+			// if (res.status === 200) {
+			// }
 		} catch (err) {
-			alert("Invalid email");
+			setErrorMessage(err.response.data.message);
+			// console.log(err.response.data.message);
 			setSubmitButton(false);
+			// setEmail("");
 		}
 	};
 	return (
@@ -33,13 +37,21 @@ const ForgotPassword = () => {
 			<br />
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Enter your email</span>
-				{successMessage && (
+
+				{successMessage ? (
 					<span
-						style={{ alignSelf: "center", color: "green", marginTop: "10px" }}
+						style={{ alignSelf: "center", marginTop: "10px", color: "green" }}
 					>
-						<h6>Check your email to reset your password!</h6>
+						<h6>{successMessage}</h6>
+					</span>
+				) : (
+					<span
+						style={{ alignSelf: "center", marginTop: "10px", color: "red" }}
+					>
+						<h6>{errorMessage}</h6>
 					</span>
 				)}
+
 				<form
 					method="POST"
 					className="loginForm"
@@ -47,6 +59,7 @@ const ForgotPassword = () => {
 					autoComplete="off"
 				>
 					<input
+						required
 						type="email"
 						className="loginInput"
 						onChange={(e) => setEmail(e.target.value)}

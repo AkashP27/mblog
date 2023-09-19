@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/errorController");
 const authRoute = require("./routes/authRoute");
 const postRoute = require("./routes/postsRoute");
 const usersRoute = require("./routes/usersRoute");
@@ -29,6 +31,8 @@ app.use("/users", usersRoute);
 app.all("*", (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl}`, 404));
 });
+
+app.use(globalErrorHandler);
 
 const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {

@@ -28,7 +28,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPost = catchAsync(async (req, res, next) => {
-	const posts = await Post.find(query).sort("-createdAt");
+	const posts = await Post.find().sort("-createdAt");
 	// const posts = await Post.find(query).sort({ _id: -1 }).explain();
 
 	if (!posts) {

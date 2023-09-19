@@ -1,20 +1,41 @@
+// import "./index.css";
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import ReactQuill from "react-quill";
-import jwt_decode from "jwt-decode";
 import "react-quill/dist/quill.snow.css";
+import jwt_decode from "jwt-decode";
+// import axios from "axios";
 import "../styles/single.css";
+import ClipLoader from "react-spinners/ClipLoader";
+
+const override = {
+	display: "block",
+	margin: "200px auto",
+};
+
+const modules = {
+	toolbar: [
+		[{ font: [] }],
+		[{ header: [1, 2, 3, 4, 5, 6, false] }],
+		["bold", "italic", "underline", "strike"],
+		[{ color: [] }, { background: [] }],
+		[{ script: "sub" }, { script: "super" }],
+		["blockquote", "code-block"],
+		[{ list: "ordered" }, { list: "bullet" }],
+		// ["link", "image", "video"],
+		["clean"],
+	],
+};
 
 const Single = () => {
 	let history = useHistory();
 	const location = useLocation();
-
+	const { token } = useContext(Context);
 	const path = location.pathname.split("/")[2];
 	const [post, setPost] = useState("");
-
-	const { token } = useContext(Context);
+	const [loading, setLoading] = useState(false);
 
 	if (token) {
 		var decoded = jwt_decode(token);
@@ -27,52 +48,47 @@ const Single = () => {
 	const [desc, setDesc] = useState("");
 	const [update, setUpdate] = useState(false);
 
-	const modules = {
-		toolbar: [
-			[{ font: [] }],
-			[{ header: [1, 2, 3, 4, 5, 6, false] }],
-			["bold", "italic", "underline", "strike"],
-			[{ color: [] }, { background: [] }],
-			[{ script: "sub" }, { script: "super" }],
-			["blockquote", "code-block"],
-			[{ list: "ordered" }, { list: "bullet" }],
-			["link", "image", "video"],
-			["clean"],
-		],
-	};
-
 	useEffect(() => {
+		setLoading(true);
 		const getPost = async () => {
 			const res = await axiosInstance.get("/posts/" + path);
-			setPost(res.data);
-			setName(res.data.name);
-			setTitle(res.data.title);
-			setDesc(res.data.desc);
+			setPost(res.data.data.post);
+			setName(res.data.data.post.uploadedBy?.name);
+			setTitle(res.data.data.post.title);
+			setDesc(res.data.data.post.desc);
+			setLoading(false);
 		};
 		getPost();
 	}, [path]);
 
+	// if (update) {
+	// 	console.log(desc);
+	// }
+
 	const handleDelete = async () => {
 		let deletepost = window.confirm("Are you sure to delete the post?");
 		if (deletepost) {
+			setLoading(true);
+
 			try {
 				await axiosInstance.delete(`/posts/${post._id}`, {
 					headers: {
 						authorization: `Bearer ${token}`,
 					},
 				});
+				setLoading(false);
 
 				// alert("Post deleted successfully");
 				history.push("/");
 			} catch (err) {
-				console.log(err.response);
 				alert("Could not delete the post");
 			}
 		}
 	};
 
 	const handleUpdate = async () => {
-		console.log(desc);
+		setLoading(true);
+
 		try {
 			await axiosInstance.put(
 				`/posts/${post._id}`,
@@ -88,85 +104,98 @@ const Single = () => {
 			);
 			// window.location.reload();
 			setUpdate(false);
+			setLoading(false);
+
 			// alert("Your Post updated Successfully");
 		} catch (err) {
-			alert("Sorry! Couldn't update'");
+			alert("Sorry! Couldn't update");
 		}
 	};
 
-	// console.log(path);
-
 	return (
 		<>
-			<div className="single max_width m_auto">
-				<div className="singlePostWrapper">
-					<hr className=" max_width m_auto" />
-					{post.imageURL && (
-						<img
-							className="singlePostImg max_width m_auto"
-							src={post.imageURL}
-							alt="singlepage"
-						/>
-					)}
+			{loading ? (
+				<ClipLoader
+					color={"#36d7b7"}
+					// loading={loading}
+					cssOverride={override}
+					size={50}
+					width={100}
+					display="block"
+					aria-label="Loading Spinner"
+					data-testid="loader"
+				/>
+			) : (
+				<div className="single max_width m_auto">
+					<div className="singlePostWrapper">
+						<hr className=" max_width m_auto" />
+						{post.imageURL && (
+							<img
+								className="singlePostImg max_width m_auto"
+								src={post.imageURL}
+								alt="singlepage"
+							/>
+						)}
 
-					<hr className=" max_width m_auto" />
+						<hr className=" max_width m_auto" />
+						{update ? (
+							<input
+								type="text"
+								value={title}
+								className="singlePostTitleInput"
+								onChange={(e) => setTitle(e.target.value)}
+								autoFocus
+							/>
+						) : (
+							<h1 className="singlePostTitle ">
+								{title}
+								{post.uploadedBy?.name === nameOfUser && (
+									<div className="singlePostEdit">
+										<i
+											className="singlePostIcon fas fa-edit"
+											onClick={() => setUpdate(true)}
+										></i>
+										<i
+											className="singlePostIcon fas fa-trash-alt"
+											onClick={handleDelete}
+										></i>
+									</div>
+								)}
+							</h1>
+						)}
+					</div>
+
+					<div className="singlePostInfo">
+						<span className="singlePostAuthor">
+							Author:<b>{post.uploadedBy?.name}</b>
+						</span>
+						<span className="singlePostDate">
+							{new Date(post.createdAt).toDateString()}
+						</span>
+					</div>
+
 					{update ? (
-						<input
-							type="text"
-							value={title}
-							className="singlePostTitleInput"
-							onChange={(e) => setTitle(e.target.value)}
-							autoFocus
+						<ReactQuill
+							// className="singlePostDesc"
+							placeholder="Tell your story"
+							theme="snow"
+							modules={modules}
+							value={desc}
+							onChange={(newValue) => setDesc(newValue)}
 						/>
 					) : (
-						<h1 className="singlePostTitle ">
-							{title}
-							{post.name === nameOfUser && (
-								<div className="singlePostEdit">
-									<i
-										className="singlePostIcon fas fa-edit"
-										onClick={() => setUpdate(true)}
-									></i>
-									<i
-										className="singlePostIcon fas fa-trash-alt"
-										onClick={handleDelete}
-									></i>
-								</div>
-							)}
-						</h1>
+						<div
+							className="singlePostDesc"
+							dangerouslySetInnerHTML={{ __html: desc }}
+						/>
+					)}
+					{update && (
+						<button className="singlePostButton" onClick={handleUpdate}>
+							Update
+						</button>
 					)}
 				</div>
-
-				<div className="singlePostInfo">
-					<span className="singlePostAuthor">
-						Author:<b>{post.name}</b>
-					</span>
-					<span className="singlePostDate">
-						{new Date(post.createdAt).toDateString()}
-					</span>
-				</div>
-
-				{update ? (
-					<ReactQuill
-						// className="singlePostDesc"
-						placeholder="Tell your story"
-						theme="snow"
-						modules={modules}
-						value={desc}
-						onChange={(newValue) => setDesc(newValue)}
-					/>
-				) : (
-					<div
-						className="singlePostDesc"
-						dangerouslySetInnerHTML={{ __html: desc }}
-					/>
-				)}
-				{update && (
-					<button className="singlePostButton" onClick={handleUpdate}>
-						Update
-					</button>
-				)}
-			</div>
+			)}
 		</>
 	);
 };

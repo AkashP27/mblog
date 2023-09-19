@@ -5,28 +5,27 @@ import { axiosInstance } from "../config";
 const ResetPassword = () => {
 	const history = useHistory();
 	const { token } = useParams();
-	// console.log(token);
-
 	const [submitButton, setSubmitButton] = useState(false);
 	const [password, setPassword] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitButton(true);
 
 		try {
-			const res = await axiosInstance.put(`/auth/reset-password/${token}`, {
+			await axiosInstance.put(`/auth/reset-password/${token}`, {
 				password,
 			});
 
 			setSubmitButton(false);
 
-			if (res.status === 200) {
-				alert("Password changed successfully");
-				history.push("/login");
-			}
+			alert("Password changed successfully. Please Login again.");
+			history.push("/login");
 		} catch (err) {
-			alert("Token expired");
+			// console.log(err.response);
+			setErrorMessage(err.response.data.message);
+			setSubmitButton(false);
 		}
 	};
 	return (
@@ -35,6 +34,14 @@ const ResetPassword = () => {
 			<br />
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Enter your new password</span>
+				{errorMessage && (
+					<span
+						style={{ alignSelf: "center", marginTop: "10px", color: "red" }}
+					>
+						<h6>{errorMessage}</h6>
+					</span>
+				)}
+
 				<form
 					method="POST"
 					className="loginForm"
@@ -42,6 +49,7 @@ const ResetPassword = () => {
 					autoComplete="off"
 				>
 					<input
+						required
 						type="password"
 						className="loginInput"
 						onChange={(e) => setPassword(e.target.value)}
