@@ -26,7 +26,7 @@ mongoose
 
 app.use("/auth", authRoute);
 app.use("/posts", postRoute);
-app.use("/users", usersRoute);
+app.use("/user", usersRoute);
 
 app.all("*", (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl}`, 404));

@@ -1,157 +1,199 @@
 .myprofile {
-  height: 100%;
-  width: 100%;
-  background-color: rgb(250, 249, 249);
-  display: flex;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: "Nunito", sans-serif;
+	height: 100%;
+	width: 100%;
+	background-color: rgb(250, 249, 249);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: "Nunito", sans-serif;
+	border-radius: 20px;
 }
 
 .myprofilewrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
 }
 
 .myprofileheading {
-  margin-top: 20px;
-  font-size: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+	margin-top: 20px;
+	font-size: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .myprofileupdateheading {
-  font-size: 30px;
-  /* margin-bottom: 20px; */
-  color: lightcoral;
+	font-size: 30px;
+	/* margin-bottom: 20px; */
+	color: lightcoral;
 }
 
 .myprofileform {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: 20px;
-  padding: 10px;
-  width: 93%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+	padding: 10px;
+	width: 100%;
 }
 
 .myprofileform > input {
-  color: gray;
-  /* font-size: 18px; */
-  /* margin: 10px 0px; */
-  margin-bottom: 2px;
-  height: 40px;
-  border: none;
-  border-bottom: 1px solid lightgray;
+	color: gray;
+	/* font-size: 18px; */
+	/* margin: 10px 0px; */
+	margin-bottom: 2px;
+	height: 40px;
+	border: none;
+	border-bottom: 1px solid lightgray;
+	width: 40%;
+
+	/* width: 250px; */
 }
 
 .myprofilesubmit {
-  width: 100px;
-  align-self: center;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  background-color: #489cb1;
-  padding: 6px;
-  margin: 10px 64px 30px 16px;
-  cursor: pointer;
+	width: 100px;
+	align-self: center;
+	border: none;
+	border-radius: 3px;
+	color: white;
+	background-color: #489cb1;
+	padding: 2px;
+	/* margin: 100px 64px 12px 16px; */
+	margin-top: 15px;
+	cursor: pointer;
 }
 
-.butn {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.delete {
+	width: 123px;
+	height: 32px;
+	align-self: center;
+	border: none;
+	border-radius: 3px;
+	color: white;
+	background-color: #b42f2f;
+	padding: 2px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	/* margin: 8px 64px 12px 16px; */
+	cursor: pointer;
+}
+
+.bottom {
+	display: flex;
+	justify-content: center;
 }
 
 @media (max-width: 770px) {
-  .myprofileupdateheading {
-    font-size: 25px;
-  }
-  .myprofileform {
-    margin-top: 20px;
-    padding: 10px;
-    width: 90%;
-  }
-  .myprofilesubmit {
-    width: 80px;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 8px 64px 30px 16px;
-  }
+	.myprofileupdateheading {
+		font-size: 25px;
+	}
+	.myprofileform {
+		margin-top: 20px;
+		padding: 10px;
+		width: 90%;
+	}
+	.myprofilesubmit {
+		width: 80px;
+		padding: 5px;
+		/* margin: 8px 64px 30px 16px; */
+	}
+
+	.myprofileform > input {
+		width: 55%;
+	}
 }
 
 @media (max-width: 600px) {
-  .myprofileupdateheading {
-    font-size: 22px;
-  }
-  .myprofileform {
-    margin-top: 18px;
-    padding: 9px;
-    width: 85%;
-  }
-  .myprofilesubmit {
-    width: 70px;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 7px 64px 30px 16px;
-  }
-  .myprofilesubmit {
-    font-size: 15px;
-  }
+	.myprofileupdateheading {
+		font-size: 22px;
+	}
+	.myprofileform {
+		margin-top: 18px;
+		padding: 9px;
+		width: 85%;
+	}
+
+	.myprofileform > input {
+		width: 65%;
+	}
+	.myprofilesubmit {
+		width: 70px;
+		padding: 5px;
+		/* margin: 7px 64px 30px 16px; */
+	}
+	.myprofilesubmit {
+		font-size: 15px;
+	}
+
+	.delete {
+		font-size: 15px;
+	}
 }
 
 @media (max-width: 500px) {
-  .myprofileupdateheading {
-    font-size: 20px;
-  }
-  .myprofileform {
-    margin-top: 16px;
-    padding: 8px;
-    width: 80%;
-  }
+	.myprofileupdateheading {
+		font-size: 20px;
+	}
+	.myprofileform {
+		margin-top: 16px;
+		padding: 8px;
+		width: 80%;
+	}
 
-  .myprofileform > input {
-    color: gray;
-    margin-bottom: 2px;
-    height: 40px;
-    border: none;
-    border-bottom: 1px solid lightgray;
-  }
-  .myprofilesubmit {
-    width: 60px;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 6px 50px 30px 16px;
-    font-size: 10px;
-  }
+	.myprofileform > input {
+		color: gray;
+		margin-bottom: 2px;
+		height: 40px;
+		border: none;
+		border-bottom: 1px solid lightgray;
+		width: 75%;
+	}
+	.myprofilesubmit {
+		width: 60px;
+		padding: 5px;
+		font-size: 10px;
+	}
 
-  
+	.delete {
+		font-size: 10px;
+		width: 80px;
+		height: 26px;
+	}
 }
 
-@media (max-width:400px){
-  .myprofileupdateheading {
-    font-size: 15px;
-  }
-  .myprofileform {
-    margin-top: 14px;
-    padding: 7px;
-    width: 80%;
-  }
+@media (max-width: 400px) {
+	.myprofileupdateheading {
+		font-size: 15px;
+	}
+	.myprofileform {
+		margin-top: 14px;
+		padding: 7px;
+		width: 80%;
+	}
 
-  .myprofileform > input {
-    color: gray;
-    margin-bottom: 2px;
-    height: 35px;
-    border: none;
-    border-bottom: 1px solid lightgray;
-  }
-  .myprofilesubmit {
-    width: 60px;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 4px 35px 30px 16px;
-    font-size: 10px;
-  }
+	.myprofileform > input {
+		color: gray;
+		margin-bottom: 2px;
+		height: 35px;
+		border: none;
+		border-bottom: 1px solid lightgray;
+		width: 85%;
+	}
+	.myprofilesubmit {
+		width: 60px;
+		padding: 5px;
+		/* margin: 4px 35px 30px 16px; */
+		font-size: 10px;
+	}
 
+	.delete {
+		font-size: 10px;
+		width: 80px;
+		height: 26px;
+	}
 }

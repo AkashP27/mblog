@@ -84,6 +84,12 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 		return next(new AppError("Wrong Credentials", 401));
 	}
 
+	if (user.passwordResetToken && user.passwordResetExpires) {
+		user.passwordResetToken = undefined;
+		user.passwordResetExpires = undefined;
+		await user.save();
+	}
+
 	const token = signToken(user._id, user.name);
 	user.password = undefined;
 
@@ -172,7 +178,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	// 3) Send token to user's email
-	const resetURL = `${req.protocol}://localhost:3006/reset-password/${resetToken}`;
+	const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
 
 	const message = `Forgot your password? Enter your new password here: ${resetURL}\nIf you didn't forget your password, please ignore this email`;
 
@@ -241,5 +247,39 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 	res.status(200).json({
 		status: "success",
 		message: "Password Changed successfully",
+	});
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+	if (!passwordValidate(req.body.newPassword)) {
+		return next(
+			new AppError(
+				"Password should be minimum 6 characters, atleast one upper and lower case, one number, one special character",
+				400
+			)
+		);
+	}
+	// if (req.body.newPassword.length < 6) {
+	// 	return next(new AppError("Password should be atleast 6 characters", 400));
+	// }
+	const user = await User.findById(req.user._id).select("+password");
+
+	const comparePassword = async (candidatePassword, userPassword) => {
+		return await bcrypt.compare(candidatePassword, userPassword);
+	};
+
+	if (!(await comparePassword(req.body.currentPassword, user.password))) {
+		return next(new AppError("Your current password is incorrect", 401));
+	}
+
+	const salt = await bcrypt.genSalt(10);
+	req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+	user.password = req.body.newPassword;
+	await user.save();
+
+	res.status(200).json({
+		status: "success",
+		message: "Password updated successfully. Please Login again",
 	});
 });

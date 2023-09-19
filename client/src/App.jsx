@@ -11,6 +11,7 @@ import Register from "./components/Register";
 import MyProfile from "./components/MyProfile";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import ChangePassword from "./components/ChangePassword";
 import "./help.css";
 
 const App = () => {
@@ -42,6 +43,9 @@ const App = () => {
 					</Route>
 					<Route exact path="/reset-password/:token">
 						<ResetPassword />
+					</Route>
+					<Route exact path="/update-password">
+						<ChangePassword />
 					</Route>
 				</Switch>
 			</div>
