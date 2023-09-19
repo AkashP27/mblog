@@ -12,14 +12,25 @@ const override = {
 
 const Home = () => {
 	const [posts, setPosts] = useState([]);
+	const [search, setSearch] = useState("");
+
 	const [loading, setLoading] = useState(false);
+
+	const searchHandler = (e) => {
+		console.log(e.target.value);
+		setSearch(e.target.value);
+	};
 
 	useEffect(() => {
 		const myAbortController = new AbortController();
 
+		if (!search) {
+			setLoading(true);
+		}
+
 		const fetchPosts = async () => {
 			try {
-				const res = await axiosInstance.get(`/posts`, {
+				const res = await axiosInstance.get(`/posts?title=${search}`, {
 					signal: myAbortController.signal,
 				});
 
@@ -29,7 +40,7 @@ const Home = () => {
 				setPosts(res.data.data.posts);
 			} catch (err) {
 				if (!myAbortController.signal.aborted) {
-					console.log(err.response);
+					console.log(err);
 				}
 			}
 		};
@@ -39,13 +50,20 @@ const Home = () => {
 		return () => {
 			myAbortController.abort();
 		};
-	}, []);
+	}, [search]);
 
 	return (
 		<>
 			<Header />
 			<div className="post_heading max_width m_auto">
 				<h1 style={{ fontFamily: "'Nunito', sans-serif" }}>Posts</h1>
+				<div className="search">
+					<input
+						type="search"
+						placeholder="Search for post title..."
+						onChange={searchHandler}
+					/>
+				</div>
 				<NavLink className="btnn" to="/write">
 					Create Post
 				</NavLink>
