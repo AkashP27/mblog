@@ -1,6 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const helmet = require("helmet");
 const cors = require("cors");
 
 const AppError = require("./utils/appError");
@@ -11,9 +14,19 @@ const usersRoute = require("./routes/usersRoute");
 const OAuthRoute = require("./routes/OAuthRoute");
 
 const app = express();
+
+// Set security HTTP headers
+app.use(helmet());
+
 app.use(express.json());
 app.use(cors());
-dotenv.config();
+dotenv.config({ path: "./env" });
+
+// Data sanitization against NoSQL query injection - for email  {"$gt" :""}
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
 
 mongoose
 	.connect(process.env.MONGO_LOCAL, {
