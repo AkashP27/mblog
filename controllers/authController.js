@@ -63,7 +63,7 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 exports.loginUser = catchAsync(async (req, res, next) => {
 	const user = await User.findOne({
 		email: req.body.email,
-	}).select("+password +active");
+	}).select("+password +active +oAuth");
 
 	if (!user) {
 		return next(new AppError("Wrong Credentials", 401));
@@ -76,6 +76,10 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 				401
 			)
 		);
+	}
+
+	if (user.oAuth) {
+		return next(new AppError("Please login using Google", 401));
 	}
 
 	const validated = await bcrypt.compare(req.body.password, user.password);
@@ -149,12 +153,16 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 	// 1) Get user based on provided email
 	const user = await User.findOne({
 		email: req.body.email,
-	}).select("+active");
+	}).select("+active +oAuth");
 
 	if (!user) {
 		return next(
 			new AppError("User does not exist with this email address.", 404)
 		);
+	}
+
+	if (user.oAuth) {
+		return next(new AppError("Please login using Google", 401));
 	}
 
 	if (!user?.active) {
@@ -262,7 +270,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 	// if (req.body.newPassword.length < 6) {
 	// 	return next(new AppError("Password should be atleast 6 characters", 400));
 	// }
-	const user = await User.findById(req.user._id).select("+password");
+	const user = await User.findById(req.user._id).select("+password +oAuth");
+
+	if (user.oAuth) {
+		return next(new AppError("Please login using Google", 401));
+	}
 
 	const comparePassword = async (candidatePassword, userPassword) => {
 		return await bcrypt.compare(candidatePassword, userPassword);

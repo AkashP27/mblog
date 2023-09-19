@@ -24,6 +24,11 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 		},
 		passwordResetExpires: Date,
+		oAuth: {
+			type: Boolean,
+			default: false,
+			select: false,
+		},
 		active: {
 			type: Boolean,
 			default: true,

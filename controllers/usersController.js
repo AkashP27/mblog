@@ -34,7 +34,7 @@ exports.getAllActiveUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-	const user = await User.findById(req.params.id);
+	const user = await User.findById(req.params.id).select("+oAuth");
 
 	if (!user) {
 		return next(new AppError("Couldn't find user with that ID", 404));

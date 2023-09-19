@@ -8,6 +8,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const authRoute = require("./routes/authRoute");
 const postRoute = require("./routes/postsRoute");
 const usersRoute = require("./routes/usersRoute");
+const OAuthRoute = require("./routes/OAuthRoute");
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,7 @@ mongoose
 app.use("/auth", authRoute);
 app.use("/posts", postRoute);
 app.use("/user", usersRoute);
+app.use("/oauth", OAuthRoute);
 
 app.all("*", (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl}`, 404));
