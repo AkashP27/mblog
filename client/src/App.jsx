@@ -12,6 +12,7 @@ import MyProfile from "./components/MyProfile";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ChangePassword from "./components/ChangePassword";
+import PageNotFound from "./components/PageNotFound";
 import "./help.css";
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
 					<Route exact path="/update-password">
 						<ChangePassword />
 					</Route>
+					<Route path="*" exact component={PageNotFound} />
 				</Switch>
 			</div>
 		</>

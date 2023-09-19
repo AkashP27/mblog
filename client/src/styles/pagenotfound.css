@@ -1,0 +1,11 @@
+.page-not-found {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 15%;
+}
+
+.page-not-found a {
+	color: rgb(98, 155, 129);
+}
