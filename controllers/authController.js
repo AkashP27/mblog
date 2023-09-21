@@ -3,15 +3,10 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const signToken = require("../utils/signJWTToken");
 const sendEmail = require("../utils/email");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
-
-const signToken = (id, name) => {
-	return jwt.sign({ id, name }, process.env.JWT_SECRET_KEY, {
-		expiresIn: process.env.JWT_EXPIRES_IN,
-	});
-};
 
 const passwordValidate = (password) => {
 	// console.log("Checking password");

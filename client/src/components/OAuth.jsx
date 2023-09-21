@@ -16,7 +16,13 @@ const OAuth = () => {
 
 	const search = useLocation().search;
 	const code = new URLSearchParams(search).get("code");
+	// console.log(new URLSearchParams(search).get("scope"));
 	// console.log(code);
+
+	let vendor;
+	new URLSearchParams(search).get("scope")
+		? (vendor = "google")
+		: (vendor = "github");
 
 	useEffect(() => {
 		dispatch({ type: "LOGIN_START" });
@@ -24,7 +30,7 @@ const OAuth = () => {
 		const fetchPosts = async () => {
 			setLoading(true);
 			try {
-				const res = await axiosInstance.get(`/oauth/google?code=${code}`);
+				const res = await axiosInstance.get(`/oauth/${vendor}?code=${code}`);
 				dispatch({ type: "LOGIN_SUCCESS", payload: res.data.data });
 				setLoading(false);
 				history.push("/");

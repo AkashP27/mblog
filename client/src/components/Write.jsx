@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import jwt_decode from "jwt-decode";
@@ -28,6 +29,7 @@ const modules = {
 };
 
 const Write = () => {
+	const history = useHistory();
 	const { token } = useContext(Context);
 	var decoded = jwt_decode(token);
 	// console.log(decoded);
@@ -53,6 +55,7 @@ const Write = () => {
 			window.location.replace("/post/" + res.data.data.post._id);
 		} catch (err) {
 			alert("Sorry! Post was not created");
+			history.push("/");
 		}
 	};
 
