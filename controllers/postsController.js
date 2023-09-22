@@ -3,6 +3,15 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const cloudinary = require("../utils/cloudinary");
 
+const unEscape = (htmlStr) => {
+	htmlStr = htmlStr.replace(/&lt;/g, "<");
+	htmlStr = htmlStr.replace(/&gt;/g, ">");
+	htmlStr = htmlStr.replace(/&quot;/g, '"');
+	htmlStr = htmlStr.replace(/&#39;/g, "'");
+	htmlStr = htmlStr.replace(/&amp;/g, "&");
+	return htmlStr;
+};
+
 exports.createPost = catchAsync(async (req, res, next) => {
 	if (!req.file) {
 		return next(new AppError(`Please upload a file`, 500));
@@ -73,6 +82,9 @@ exports.getSinglePost = catchAsync(async (req, res, next) => {
 exports.updatePost = catchAsync(async (req, res, next) => {
 	// console.log(req.body.desc);
 
+	let unEscapedStr = unEscape(req.body.desc);
+	// console.log(unEscapedStr);
+
 	const post = await Post.findById(req.params.id).populate({
 		path: "uploadedBy",
 		select: "-__v -createdAt -updatedAt",
@@ -89,7 +101,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 	const updatedPost = await Post.findByIdAndUpdate(
 		req.params.id,
 		{
-			$set: req.body,
+			$set: { title: req.body.title, desc: unEscapedStr },
 			// $set: { desc: unEscapedStr },
 		},
 		{ new: true }
