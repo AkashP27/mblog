@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  client:
+    image: akashp27/mblog-client:0.0.3.RELEASE
+    env_file:
+      - ./client/.env
+    build: ./client
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    networks:
+      - mern-network
+    volumes:
+      - "./client/:/usr/src/app"
+      - /usr/src/app/node_modules
+
+  api:
+    image: akashp27/mblog-api:0.0.3.RELEASE
+    env_file:
+      - ./.env
+    build: ./
+    ports:
+      - "5500:5500"
+    networks:
+      - mern-network
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:4.4-bionic
+    ports:
+      - "27017:27017"
+    networks:
+      - mern-network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  mern-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

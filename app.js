@@ -29,7 +29,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 mongoose
-	.connect(process.env.MONGO_LOCAL, {
+	.connect(process.env.MONGO_DOCKER, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true,
@@ -51,5 +51,5 @@ app.use(globalErrorHandler);
 
 const port = process.env.PORT || 5000;
 const server = app.listen(port, () => {
-	console.log(`server is running on ${port}`);
+	console.log(`server is  on ${port}`);
 });
