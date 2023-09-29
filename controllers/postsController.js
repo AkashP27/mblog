@@ -13,6 +13,8 @@ const unEscape = (htmlStr) => {
 };
 
 exports.createPost = catchAsync(async (req, res, next) => {
+	req.user.postKey = "POSTS";
+
 	if (!req.file) {
 		return next(new AppError(`Please upload a file`, 500));
 	}
@@ -45,7 +47,9 @@ exports.getAllPost = catchAsync(async (req, res, next) => {
 		},
 	};
 
-	const posts = await Post.find(query).sort("-createdAt");
+	const posts = await Post.find(query)
+		.sort("-createdAt")
+		.cache({ key: "POSTS" });
 	// const posts = await Post.find(query).sort({ _id: -1 }).explain();
 
 	if (!posts) {
@@ -80,6 +84,7 @@ exports.getSinglePost = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePost = catchAsync(async (req, res, next) => {
+	req.user.postKey = "POSTS";
 	// console.log(req.body.desc);
 
 	let unEscapedStr = unEscape(req.body.desc);
@@ -115,6 +120,8 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
+	req.user.postKey = "POSTS";
+
 	// console.log(req.user.name);
 	const post = await Post.findById(req.params.id).populate({
 		path: "uploadedBy",

@@ -34,7 +34,9 @@ exports.getAllActiveUsers = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-	const user = await User.findById(req.params.id).select("+oAuth");
+	const user = await User.findById(req.params.id)
+		.select("+oAuth")
+		.cache({ key: req.user.id });
 
 	if (!user) {
 		return next(new AppError("Couldn't find user with that ID", 404));
@@ -102,9 +104,11 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
 		return next(new AppError("You can access only your posts", 401));
 	}
 
-	const posts = await Post.find({ uploadedBy: req.params.id }).sort({
-		_id: -1,
-	});
+	const posts = await Post.find({ uploadedBy: req.params.id })
+		.sort({
+			_id: -1,
+		})
+		.cache({ key: req.user.id });
 
 	res.status(200).json({
 		status: "success",
