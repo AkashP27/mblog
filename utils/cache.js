@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Redis = require("ioredis");
 
-const redis = new Redis(process.env.REDIS_DOCKER_URL);
+const redis = new Redis(process.env.LOCAL_REDIS_URL);
 const exec = mongoose.Query.prototype.exec;
 
 mongoose.Query.prototype.cache = function (options = {}) {

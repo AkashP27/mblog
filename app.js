@@ -29,7 +29,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 mongoose
-	.connect(process.env.MONGO_DOCKER, {
+	.connect(process.env.MONGO_LOCAL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useCreateIndex: true,
