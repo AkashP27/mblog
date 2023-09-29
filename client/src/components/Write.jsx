@@ -48,13 +48,15 @@ const Write = () => {
 		data.append("uploadedBy", decoded.id);
 
 		try {
-			const res = await axiosInstance.post("/posts/", data);
+			const res = await axiosInstance.post("/posts/", data, {
+				headers: { authorization: `Bearer ${token}` },
+			});
 			setLoading(false);
 			// alert("Post created successfully");
 			// console.log(res.data.data.post);
 			window.location.replace("/post/" + res.data.data.post._id);
 		} catch (err) {
-			alert("Sorry! Post was not created");
+			alert(`Sorry! Post was not created. ${err.response.data.message}`);
 			history.push("/");
 		}
 	};

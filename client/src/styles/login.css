@@ -63,6 +63,7 @@
 
 .loginButton:hover {
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
+	background-color: #1d839c;
 }
 
 .loginButton:disabled {
@@ -116,20 +117,22 @@
 	cursor: pointer;
 }
 
-.google:hover {
-	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-
-.github:hover {
-	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-
 .google {
 	background-color: #e0614a;
 }
 
 .github {
 	background-color: rgb(60, 58, 58);
+}
+
+.google:hover {
+	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
+	background-color: #d14f38;
+}
+
+.github:hover {
+	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
+	background-color: rgb(43, 42, 42);
 }
 
 .icon {
