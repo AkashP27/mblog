@@ -90,3 +90,21 @@ npm start
 ```
 
 This command will start the frontend server, and you'll be able to access the website on localhost:3000 in your web browser.
+
+## Dockerize the app
+
+#### Step 1: Start docker daemon and pull the images
+
+```bash
+docker pull akashp27/mblog-client:0.0.4.RELEASE
+```
+
+```bash
+docker pull akashp27/mblog-api:0.0.4.RELEASE
+```
+
+#### Step 2: Run the containers using docker compose file
+
+```bash
+docker-compose -f docker-compose.yaml up
+```
