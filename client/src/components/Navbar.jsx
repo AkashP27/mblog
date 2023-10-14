@@ -18,7 +18,9 @@ const Navbar = () => {
 			<nav className="main_nav max_width m_auto">
 				<div className="logo">
 					<h2>
-						<span>MBlog</span>
+						<NavLink to="/">
+							<span>MBlog</span>
+						</NavLink>
 					</h2>
 				</div>
 				<a

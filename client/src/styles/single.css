@@ -1,6 +1,5 @@
 .single {
-	padding: 20px;
-	padding-right: 0;
+	margin-top: 15px;
 	display: flex;
 	flex-direction: column;
 	font-family: "Nunito", sans-serif;
@@ -16,7 +15,6 @@
 .singlePostTitle {
 	text-align: center;
 	margin: 20px;
-	/* font-size: 30px; */
 	font-size: 2.5rem;
 }
 
@@ -65,31 +63,18 @@
 }
 
 .singlePostDesc {
-	/* color: #666; */
 	font-size: 18px;
 	line-height: 36.5px;
-	width: 75vw;
-	margin-right: auto;
-	margin-left: 0px;
-	/* max-width: 100% !important;
-    overflow-x: hidden !important; */
 }
-
-/* .singlePostDesc::first-letter {
-	margin-left: 20px;
-	font-size: 30px;
-	font-weight: 600;
-} */
 
 .singlePostDescInput {
 	border: none;
 	outline: none;
-
-	/* color: #666; */
 	font-size: 18px;
 	line-height: 36.5px;
 	height: 100vh;
 }
+
 .singlePostDescInput:focus {
 	outline: none;
 }
@@ -112,23 +97,16 @@
 
 @media (max-width: 770px) {
 	.singlePostImg {
-		width: 100%;
 		height: 400px;
-		object-fit: cover;
 		border-radius: 10px;
 	}
 
 	.singlePostTitle {
-		margin: 20px;
 		font-size: 2.4rem;
 	}
+
 	.singlePostTitleInput {
-		outline: none;
-		border: none;
-		margin: 10px;
 		font-size: 27px;
-		text-align: center;
-		width: 98%;
 	}
 	.singlePostInfo {
 		margin-bottom: 20px;
@@ -139,10 +117,8 @@
 	.singlePostDesc {
 		font-size: 18px;
 		line-height: 34.5px;
-		width: 71vw;
-		margin-right: auto;
-		margin-left: 0px;
 	}
+
 	.singlePostDescInput {
 		font-size: 18px;
 		line-height: 34.5px;
@@ -152,6 +128,7 @@
 	.singlePostEdit {
 		font-size: 18px;
 	}
+
 	.singlePostButton {
 		padding: 4px;
 		width: 80px;
@@ -161,24 +138,18 @@
 
 @media (max-width: 600px) {
 	.singlePostImg {
-		width: 100%;
 		height: 370px;
-		object-fit: cover;
 		border-radius: 10px;
 	}
 
 	.singlePostTitle {
-		margin: 20px;
 		font-size: 2.3rem;
 	}
+
 	.singlePostTitleInput {
-		outline: none;
-		border: none;
-		margin: 10px;
 		font-size: 25px;
-		text-align: center;
-		width: 98%;
 	}
+
 	.singlePostInfo {
 		margin-bottom: 20px;
 		font-size: 15px;
@@ -188,18 +159,18 @@
 	.singlePostDesc {
 		font-size: 16px;
 		line-height: 32.5px;
-		width: 69vw;
-		margin-right: auto;
-		margin-left: 0px;
 	}
+
 	.singlePostDescInput {
 		font-size: 16px;
 		line-height: 32.5px;
 		height: 100vh;
 	}
+
 	.singlePostEdit {
 		font-size: 16px;
 	}
+
 	.singlePostButton {
 		padding: 3px;
 		width: 70px;
@@ -209,24 +180,18 @@
 
 @media (max-width: 500px) {
 	.singlePostImg {
-		width: 100%;
 		height: 340px;
-		object-fit: cover;
 		border-radius: 10px;
 	}
 
 	.singlePostTitle {
-		margin: 20px;
 		font-size: 2.1rem;
 	}
+
 	.singlePostTitleInput {
-		outline: none;
-		border: none;
-		margin: 10px;
 		font-size: 20px;
-		text-align: center;
-		width: 98%;
 	}
+
 	.singlePostInfo {
 		margin-bottom: 20px;
 		font-size: 11px;
@@ -236,18 +201,18 @@
 	.singlePostDesc {
 		font-size: 14px;
 		line-height: 29.5px;
-		width: 70vw;
-		margin-right: auto;
-		margin-left: 0px;
 	}
+
 	.singlePostDescInput {
 		font-size: 14px;
 		line-height: 29.5px;
 		height: 100vh;
 	}
+
 	.singlePostEdit {
 		font-size: 14px;
 	}
+
 	.singlePostButton {
 		padding: 2px;
 		width: 60px;
@@ -257,24 +222,18 @@
 
 @media (max-width: 400px) {
 	.singlePostImg {
-		width: 100%;
 		height: 310px;
-		object-fit: cover;
 		border-radius: 10px;
 	}
 
 	.singlePostTitle {
-		margin: 20px;
 		font-size: 2rem;
 	}
+
 	.singlePostTitleInput {
-		outline: none;
-		border: none;
-		margin: 10px;
 		font-size: 18px;
-		text-align: center;
-		width: 98%;
 	}
+
 	.singlePostInfo {
 		margin-bottom: 20px;
 		font-size: 9px;
@@ -284,18 +243,18 @@
 	.singlePostDesc {
 		font-size: 12px;
 		line-height: 25.5px;
-		width: 68vw;
-		margin-right: auto;
-		margin-left: 0px;
 	}
+
 	.singlePostDescInput {
 		font-size: 12px;
 		line-height: 25.5px;
 		height: 100vh;
 	}
+
 	.singlePostEdit {
 		font-size: 12px;
 	}
+
 	.singlePostButton {
 		font-size: 10px;
 		padding: 2px;

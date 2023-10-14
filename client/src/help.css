@@ -1,12 +1,36 @@
 .max_width {
-  max-width: 80vw;
+	max-width: 80vw;
 }
 
 .m_auto {
-  margin: auto;
+	margin: auto;
 }
 
 .link {
-  text-decoration: none !important;
-  color: inherit !important;
+	text-decoration: none !important;
+	color: inherit !important;
+}
+
+@media (max-width: 770px) {
+	.max_width {
+		max-width: 85vw;
+	}
+}
+
+@media (max-width: 600px) {
+	.max_width {
+		max-width: 88vw;
+	}
+}
+
+@media (max-width: 500px) {
+	.max_width {
+		max-width: 92vw;
+	}
+}
+
+@media (max-width: 400px) {
+	.max_width {
+		max-width: 95vw;
+	}
 }
