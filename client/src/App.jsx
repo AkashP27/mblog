@@ -38,7 +38,7 @@ const App = () => {
 						{token ? <Write /> : <Login />}
 					</Route>
 					<Route exact path="/myprofile">
-						<MyProfile />
+						{token ? <MyProfile /> : <Login />}
 					</Route>
 					<Route exact path="/forgot-password">
 						<ForgotPassword />
