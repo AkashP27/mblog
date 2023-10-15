@@ -46,8 +46,6 @@
 	border: none;
 	padding: 20px;
 	width: 80vw;
-	margin-right: 0px;
-	margin-left: 0px;
 	/* border-bottom: 1px solid lightgray; */
 }
 
@@ -99,9 +97,7 @@
 	.writeInput {
 		font-size: 27px;
 		padding: 20px;
-		width: 70vw;
-		margin-right: 39px;
-		margin-left: -24px;
+		width: 86vw;
 	}
 	.writeText {
 		font-size: 17px;
@@ -132,9 +128,7 @@
 	.writeInput {
 		font-size: 25px;
 		padding: 18px;
-		width: 70vw;
-		margin-right: 39px;
-		margin-left: -24px;
+		width: 88vw;
 	}
 	.writeText {
 		font-size: 15px;
@@ -165,9 +159,7 @@
 	.writeInput {
 		font-size: 22px;
 		padding: 17px;
-		width: 70vw;
-		margin-right: 39px;
-		margin-left: -24px;
+		width: 92vw;
 	}
 	.writeText {
 		font-size: 13px;
@@ -198,9 +190,7 @@
 	.writeInput {
 		font-size: 21px;
 		padding: 16px;
-		width: 70vw;
-		margin-right: 39px;
-		margin-left: -24px;
+		width: 96vw;
 	}
 	.writeText {
 		font-size: 12px;
