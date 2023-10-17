@@ -1,7 +1,7 @@
 const qs = require("qs");
 const axios = require("axios");
 
-module.exports = getOAuthTokens = async (code, url, values) => {
+module.exports = getOAuthTokens = async (url, values) => {
 	try {
 		const res = await axios.post(url, qs.stringify(values), {
 			headers: {

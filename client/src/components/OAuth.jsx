@@ -22,6 +22,8 @@ const OAuth = () => {
 	let vendor;
 	new URLSearchParams(search).get("scope")
 		? (vendor = "google")
+		: code.length > 50
+		? (vendor = "linkedIn")
 		: (vendor = "github");
 
 	useEffect(() => {

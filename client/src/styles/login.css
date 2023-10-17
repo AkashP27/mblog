@@ -106,7 +106,7 @@
 }
 
 .oauthloginButton {
-	width: 199px;
+	width: 201px;
 	padding: 11px 11px;
 	border-radius: 3px;
 	color: white;
@@ -125,6 +125,10 @@
 	background-color: rgb(60, 58, 58);
 }
 
+.linkedin {
+	background-color: rgb(0, 119, 181);
+}
+
 .google:hover {
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
 	background-color: #d14f38;
@@ -133,6 +137,11 @@
 .github:hover {
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
 	background-color: rgb(43, 42, 42);
+}
+
+.linkedin:hover {
+	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
+	background-color: rgb(3, 94, 143);
 }
 
 .icon {
@@ -169,7 +178,7 @@
 	}
 
 	.oauthloginButton {
-		width: 184px;
+		width: 187px;
 		padding: 10px 4px;
 		border-radius: 3px;
 		margin-bottom: 30px;
@@ -219,7 +228,7 @@
 	}
 
 	.oauthloginButton {
-		width: 189px;
+		width: 193px;
 		padding: 6px 7px;
 	}
 
@@ -255,7 +264,7 @@
 	}
 
 	.oauthloginButton {
-		width: 181px;
+		width: 185px;
 		padding: 4px 3px;
 	}
 

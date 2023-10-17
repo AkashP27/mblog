@@ -52,7 +52,7 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 	};
 
 	// get id & access token using auth code
-	const { id_token, access_token } = await getOAuthTokens(code, url, values);
+	const { id_token, access_token } = await getOAuthTokens(url, values);
 	// // console.log({ id_token, access_token });
 
 	// get user using token
@@ -100,7 +100,7 @@ exports.githubAuth = catchAsync(async (req, res, next) => {
 	};
 
 	// get access token using auth code
-	const access_token = await getOAuthTokens(code, url, values);
+	const access_token = await getOAuthTokens(url, values);
 	// console.log(access_token);
 
 	const decoded = qs.parse(access_token);
@@ -121,6 +121,56 @@ exports.githubAuth = catchAsync(async (req, res, next) => {
 	}
 
 	const user = await saveOauthUserInDB(githubUser);
+
+	if (!user?.active) {
+		return next(
+			new AppError(
+				`User no longer exists. Please contact mblog2728@gmail.com to reactivate account`,
+				401
+			)
+		);
+	}
+
+	const token = signToken(user._id, user.name);
+
+	res.status(201).json({
+		status: "success",
+		data: {
+			user,
+			token,
+		},
+	});
+});
+
+exports.linkedInAuth = catchAsync(async (req, res, next) => {
+	// get auth code from query string
+	const code = req.query.code;
+	// console.log(code);
+	const url = "https://www.linkedin.com/oauth/v2/accessToken";
+
+	const values = {
+		code,
+		client_id: process.env.LINKEDIN_CLIENT_ID,
+		client_secret: process.env.LINKEDIN_CLIENT_SECRET,
+		redirect_uri: process.env.OAUTH_REDIRECT_URL,
+		grant_type: "authorization_code",
+	};
+
+	// get access token using auth code
+	const { access_token } = await getOAuthTokens(url, values);
+	// console.log(access_token);
+
+	// get user using access token
+	const response = await axios.get("https://api.linkedin.com/v2/userinfo", {
+		headers: { Authorization: `Bearer ${access_token}` },
+	});
+
+	const linkedInUser = response.data;
+	// console.log(linkedInUser);
+	linkedInUser.name = linkedInUser.given_name + " " + linkedInUser.family_name;
+	// console.log(linkedInUser.name);
+
+	const user = await saveOauthUserInDB(linkedInUser);
 
 	if (!user?.active) {
 		return next(

@@ -6,6 +6,7 @@ import { axiosInstance } from "../config";
 import "../styles/login.css";
 import Google from "../images/google.png";
 import Github from "../images/github.png";
+import Linkedin from "../images/linkedin.png";
 
 const Login = () => {
 	const history = useHistory();
@@ -49,6 +50,23 @@ const Login = () => {
 		};
 
 		const queryString = new URLSearchParams(options);
+		window.location.replace(`${rootUrl}?${queryString.toString()}`);
+
+		// return `${rootUrl}?${queryString.toString()}`;
+	};
+
+	const getLinkedInAuthUrl = () => {
+		const rootUrl = `https://www.linkedin.com/oauth/v2/authorization`;
+
+		const options = {
+			redirect_uri: process.env.REACT_APP_LINKEDIN_OAUTH_REDIRECT_URL,
+			client_id: process.env.REACT_APP_LINKEDIN_CLIENT_ID,
+			response_type: "code",
+			scope: "email profile openid",
+		};
+
+		const queryString = new URLSearchParams(options);
+		console.log(`${rootUrl}?${queryString.toString()}`);
 		window.location.replace(`${rootUrl}?${queryString.toString()}`);
 
 		// return `${rootUrl}?${queryString.toString()}`;
@@ -145,6 +163,13 @@ const Login = () => {
 						<div className="oauthloginButton github" onClick={getGithubAuthUrl}>
 							<img src={Github} alt="" className="icon" />
 							Signin with Github
+						</div>
+						<div
+							className="oauthloginButton linkedin"
+							onClick={getLinkedInAuthUrl}
+						>
+							<img src={Linkedin} alt="" className="icon" />
+							Signin with LinkedIn
 						</div>
 					</div>
 				</div>
