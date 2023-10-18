@@ -203,7 +203,7 @@ const Register = () => {
 								onClick={getLinkedInAuthUrl}
 							>
 								<img src={Linkedin} alt="" className="icon" />
-								Signin with LinkedIn
+								Signup with LinkedIn
 							</div>
 						</div>
 					</div>
