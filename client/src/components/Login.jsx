@@ -1,20 +1,23 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 // import "./index.css";
 import "../styles/login.css";
 import Google from "../images/google.png";
 import Github from "../images/github.png";
 import Linkedin from "../images/linkedin.png";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const Login = () => {
 	const history = useHistory();
 	const userRef = useRef();
 	const passwordRef = useRef();
-	const { dispatch, isFetching } = useContext(Context);
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+
+	const isFetching = useSelector((state) => state.authentication.isFetching);
+	const dispatch = useDispatch();
 
 	const getGoogleAuthUrl = () => {
 		const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
@@ -75,7 +78,7 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setError(false);
-		dispatch({ type: "LOGIN_START" });
+		dispatch(authActions.loginStart());
 
 		try {
 			const res = await axiosInstance.post("/auth/login", {
@@ -84,13 +87,13 @@ const Login = () => {
 			});
 			// console.log(res);
 
-			dispatch({ type: "LOGIN_SUCCESS", payload: res.data.data });
+			dispatch(authActions.loginSuccess(res.data.data));
 			history.push("/");
 		} catch (err) {
 			// console.log(err.response);
 			setErrorMessage(err.response.data.message);
 			setError(true);
-			dispatch({ type: "LOGIN_FAILURE" });
+			dispatch(authActions.loginFailure());
 		}
 	};
 

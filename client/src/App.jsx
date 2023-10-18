@@ -1,6 +1,5 @@
 import { Route, Switch } from "react-router-dom";
-import React, { useContext } from "react";
-import { Context } from "./context/Context";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
@@ -15,9 +14,10 @@ import ChangePassword from "./components/ChangePassword";
 import OAuth from "./components/OAuth";
 import PageNotFound from "./components/PageNotFound";
 import "./help.css";
+import { useSelector } from "react-redux";
 
 const App = () => {
-	const { token } = useContext(Context);
+	const token = useSelector((state) => state.authentication.token);
 
 	return (
 		<>

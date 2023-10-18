@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
-import { Context } from "../context/Context";
 import "../styles/navbar.css";
 import "../help.css";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const Navbar = () => {
-	const { token, dispatch } = useContext(Context);
+	const token = useSelector((state) => state.authentication.token);
+	const dispatch = useDispatch();
 	const [menuOpen, setMenuOpen] = useState(false);
 	let menuRef = useRef();
 
@@ -20,7 +22,7 @@ const Navbar = () => {
 	});
 
 	const handleLogout = () => {
-		dispatch({ type: "LOGOUT" });
+		dispatch(authActions.logout());
 	};
 
 	return (

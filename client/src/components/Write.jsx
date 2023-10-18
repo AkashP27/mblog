@@ -1,6 +1,5 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import jwt_decode from "jwt-decode";
 import ReactQuill from "react-quill";
@@ -8,6 +7,7 @@ import "react-quill/dist/quill.snow.css";
 import "../index.css";
 import "../styles/write.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useSelector } from "react-redux";
 
 const override = {
 	display: "block",
@@ -30,7 +30,7 @@ const modules = {
 
 const Write = () => {
 	const history = useHistory();
-	const { token } = useContext(Context);
+	const token = useSelector((state) => state.authentication.token);
 	var decoded = jwt_decode(token);
 	// console.log(decoded);
 	const [loading, setLoading] = useState(false);

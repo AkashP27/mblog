@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
-import { Context } from "../context/Context";
 import { useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
 import { NavLink } from "react-router-dom";
@@ -8,6 +7,8 @@ import { NavLink } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import "../styles/myprofile.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const override = {
 	display: "block",
@@ -25,7 +26,9 @@ const MyProfile = () => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const { token, dispatch } = useContext(Context);
+	const token = useSelector((state) => state.authentication.token);
+	const dispatch = useDispatch();
+
 	const decoded = jwt_decode(token);
 
 	useEffect(() => {
@@ -67,7 +70,7 @@ const MyProfile = () => {
 	}, [token]);
 
 	const handleLogout = () => {
-		dispatch({ type: "LOGOUT" });
+		dispatch(authActions.logout());
 	};
 
 	const handleUpdate = async (e) => {

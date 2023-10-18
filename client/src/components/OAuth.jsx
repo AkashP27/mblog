@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useDispatch } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const override = {
 	display: "block",
@@ -12,7 +13,8 @@ const override = {
 const OAuth = () => {
 	const history = useHistory();
 	const [loading, setLoading] = useState(false);
-	const { dispatch } = useContext(Context);
+
+	const dispatch = useDispatch();
 
 	const search = useLocation().search;
 	const code = new URLSearchParams(search).get("code");
@@ -27,20 +29,20 @@ const OAuth = () => {
 		: (vendor = "github");
 
 	useEffect(() => {
-		dispatch({ type: "LOGIN_START" });
+		dispatch(authActions.loginStart());
 
 		const fetchPosts = async () => {
 			setLoading(true);
 			try {
 				const res = await axiosInstance.get(`/oauth/${vendor}?code=${code}`);
-				dispatch({ type: "LOGIN_SUCCESS", payload: res.data.data });
+				dispatch(authActions.loginSuccess(res.data.data));
 				setLoading(false);
 				history.push("/");
 				// console.log(res.data);
 			} catch (err) {
 				// console.log(err.response);
 				setLoading(false);
-				dispatch({ type: "LOGIN_FAILURE" });
+				dispatch(authActions.loginFailure());
 				alert(err.response.data.message);
 				history.push("/");
 			}

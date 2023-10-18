@@ -1,7 +1,6 @@
 // import "./index.css";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { Context } from "../context/Context";
 import { axiosInstance } from "../config";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -9,6 +8,7 @@ import jwt_decode from "jwt-decode";
 // import axios from "axios";
 import "../styles/single.css";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useSelector } from "react-redux";
 
 const override = {
 	display: "block",
@@ -32,10 +32,11 @@ const modules = {
 const Single = () => {
 	let history = useHistory();
 	const location = useLocation();
-	const { token } = useContext(Context);
 	const path = location.pathname.split("/")[2];
 	const [post, setPost] = useState("");
 	const [loading, setLoading] = useState(false);
+
+	const token = useSelector((state) => state.authentication.token);
 
 	if (token) {
 		var decoded = jwt_decode(token);

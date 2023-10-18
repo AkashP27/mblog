@@ -1,8 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { axiosInstance } from "../config";
 import { useHistory } from "react-router-dom";
-import { Context } from "../context/Context";
 import "../styles/login.css";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../store/auth-slice";
 
 const ChangePassword = () => {
 	let history = useHistory();
@@ -13,10 +14,11 @@ const ChangePassword = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 
-	const { token, dispatch } = useContext(Context);
+	const token = useSelector((state) => state.authentication.token);
+	const dispatch = useDispatch();
 
 	const handleLogout = () => {
-		dispatch({ type: "LOGOUT" });
+		dispatch(authActions.logout());
 	};
 
 	const handleSubmit = async (e) => {
