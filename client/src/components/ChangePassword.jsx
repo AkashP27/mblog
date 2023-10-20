@@ -4,16 +4,13 @@ import { useHistory } from "react-router-dom";
 import "../styles/login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
+import { toast } from "react-hot-toast";
 
 const ChangePassword = () => {
 	let history = useHistory();
-
 	const [submitButton, setSubmitButton] = useState(false);
 	const [currentPassword, setCurrentPassword] = useState();
 	const [newPassword, setNewPassword] = useState();
-	const [errorMessage, setErrorMessage] = useState("");
-	const [successMessage, setSuccessMessage] = useState("");
-
 	const token = useSelector((state) => state.authentication.token);
 	const dispatch = useDispatch();
 
@@ -33,18 +30,15 @@ const ChangePassword = () => {
 				},
 				{ headers: { authorization: `Bearer ${token}` } }
 			);
-			alert(res.data.message);
-			history.push("/");
+			history.push("/login");
 			handleLogout();
-
-			// console.log(res.data.message);
-			setSuccessMessage(res.data.message);
-			setSubmitButton(false);
-			setCurrentPassword("");
-			setNewPassword("");
+			toast.success(res.data.message, {
+				duration: 10000,
+			});
 		} catch (err) {
-			setErrorMessage(err.response.data.message);
-			// console.log(err.response.data.message);
+			toast.error(err.response.data.message, {
+				duration: 15000,
+			});
 			setSubmitButton(false);
 			// setCurrentPassword("");
 			setNewPassword("");
@@ -56,21 +50,6 @@ const ChangePassword = () => {
 			<br />
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Change your password</span>
-
-				{successMessage ? (
-					<span
-						style={{ alignSelf: "center", marginTop: "10px", color: "green" }}
-					>
-						<h6>{successMessage}</h6>
-					</span>
-				) : (
-					<span
-						style={{ alignSelf: "center", marginTop: "10px", color: "red" }}
-					>
-						<h6>{errorMessage}</h6>
-					</span>
-				)}
-
 				<form
 					method="POST"
 					className="loginForm"

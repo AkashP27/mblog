@@ -4,6 +4,7 @@ import { axiosInstance } from "../config";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth-slice";
+import { toast } from "react-hot-toast";
 
 const override = {
 	display: "block",
@@ -13,13 +14,10 @@ const override = {
 const OAuth = () => {
 	const history = useHistory();
 	const [loading, setLoading] = useState(false);
-
 	const dispatch = useDispatch();
 
 	const search = useLocation().search;
 	const code = new URLSearchParams(search).get("code");
-	// console.log(new URLSearchParams(search).get("scope"));
-	// console.log(code);
 
 	let vendor;
 	new URLSearchParams(search).get("scope")
@@ -38,13 +36,16 @@ const OAuth = () => {
 				dispatch(authActions.loginSuccess(res.data.data));
 				setLoading(false);
 				history.push("/");
-				// console.log(res.data);
+				toast.success(`Welcome ${res.data.data.user.name}`, {
+					duration: 10000,
+				});
 			} catch (err) {
-				// console.log(err.response);
 				setLoading(false);
 				dispatch(authActions.loginFailure());
-				alert(err.response.data.message);
 				history.push("/");
+				toast.error(err.response.data.message, {
+					duration: 15000,
+				});
 			}
 		};
 

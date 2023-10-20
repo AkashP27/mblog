@@ -5,6 +5,7 @@ import "../styles/login.css";
 import Google from "../images/google.png";
 import Github from "../images/github.png";
 import Linkedin from "../images/linkedin.png";
+import { toast } from "react-hot-toast";
 
 const Register = () => {
 	const history = useHistory();
@@ -12,10 +13,7 @@ const Register = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [submitButton, setSubmitButton] = useState(false);
-
-	const [error, setError] = useState(false);
-	const [passwordError, passwordSetError] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
+	const [passwordError, setPasswordError] = useState(false);
 
 	const getGoogleAuthUrl = () => {
 		const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
@@ -75,7 +73,6 @@ const Register = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitButton(true);
-		setError(false);
 
 		try {
 			const res = await axiosInstance.post("/auth/register", {
@@ -86,13 +83,15 @@ const Register = () => {
 
 			// console.log(res);
 			setSubmitButton(false);
-
 			res.data && history.push("/login");
+			toast.success("Registered. Please Login..!", {
+				duration: 5000,
+			});
 		} catch (err) {
-			setErrorMessage(err.response.data.message);
-			// console.log(err.response.data.message);
+			toast.error(err.response.data.message, {
+				duration: 15000,
+			});
 			setSubmitButton(false);
-			setError(true);
 		}
 	};
 
@@ -100,10 +99,10 @@ const Register = () => {
 		e.preventDefault();
 		let password = e.target.value;
 		if (password.length < 6) {
-			passwordSetError(true);
+			setPasswordError(true);
 			return;
 		}
-		passwordSetError(false);
+		setPasswordError(false);
 		setPassword(password);
 	};
 
@@ -114,13 +113,6 @@ const Register = () => {
 				<br />
 				<div className="login max_width m_auto">
 					<span className="loginTitle">Register</span>
-					{error && (
-						<span
-							style={{ alignSelf: "center", color: "red", marginTop: "10px" }}
-						>
-							<h6>{errorMessage}</h6>
-						</span>
-					)}
 
 					<div className="wrapper">
 						<div className="leftside">

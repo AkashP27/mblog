@@ -8,6 +8,7 @@ import "../index.css";
 import "../styles/write.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 const override = {
 	display: "block",
@@ -32,7 +33,6 @@ const Write = () => {
 	const history = useHistory();
 	const token = useSelector((state) => state.authentication.token);
 	var decoded = jwt_decode(token);
-	// console.log(decoded);
 	const [loading, setLoading] = useState(false);
 	const [file, setFile] = useState(null);
 	const [title, setTitle] = useState("");
@@ -52,12 +52,15 @@ const Write = () => {
 				headers: { authorization: `Bearer ${token}` },
 			});
 			setLoading(false);
-			// alert("Post created successfully");
-			// console.log(res.data.data.post);
 			window.location.replace("/post/" + res.data.data.post._id);
+			toast.success("Post created successfully", {
+				duration: 5000,
+			});
 		} catch (err) {
-			alert(`Sorry! Post was not created. ${err.response.data.message}`);
 			history.push("/");
+			toast.error(`Sorry! Post was not created. ${err.response.data.message}`, {
+				duration: 15000,
+			});
 		}
 	};
 

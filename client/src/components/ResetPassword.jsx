@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
+import { toast } from "react-hot-toast";
 
 const ResetPassword = () => {
 	const history = useHistory();
 	const { token } = useParams();
 	const [submitButton, setSubmitButton] = useState(false);
 	const [password, setPassword] = useState("");
-	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -19,12 +19,14 @@ const ResetPassword = () => {
 			});
 
 			setSubmitButton(false);
-
-			alert("Password changed successfully. Please Login again.");
 			history.push("/login");
+			toast.success("Password changed successfully. Please Login again.", {
+				duration: 10000,
+			});
 		} catch (err) {
-			// console.log(err.response);
-			setErrorMessage(err.response.data.message);
+			toast.error(err.response.data.message, {
+				duration: 15000,
+			});
 			setSubmitButton(false);
 		}
 	};
@@ -34,13 +36,6 @@ const ResetPassword = () => {
 			<br />
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Enter your new password</span>
-				{errorMessage && (
-					<span
-						style={{ alignSelf: "center", marginTop: "10px", color: "red" }}
-					>
-						<h6>{errorMessage}</h6>
-					</span>
-				)}
 
 				<form
 					method="POST"

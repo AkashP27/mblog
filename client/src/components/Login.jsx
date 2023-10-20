@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
 // import "./index.css";
@@ -8,14 +8,12 @@ import Github from "../images/github.png";
 import Linkedin from "../images/linkedin.png";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
 	const history = useHistory();
 	const userRef = useRef();
 	const passwordRef = useRef();
-	const [error, setError] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
-
 	const isFetching = useSelector((state) => state.authentication.isFetching);
 	const dispatch = useDispatch();
 
@@ -77,7 +75,6 @@ const Login = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setError(false);
 		dispatch(authActions.loginStart());
 
 		try {
@@ -89,10 +86,13 @@ const Login = () => {
 
 			dispatch(authActions.loginSuccess(res.data.data));
 			history.push("/");
+			toast.success(`Welcome ${res.data.data.user.name}`, {
+				duration: 10000,
+			});
 		} catch (err) {
-			// console.log(err.response);
-			setErrorMessage(err.response.data.message);
-			setError(true);
+			toast.error(err.response.data.message, {
+				duration: 10000,
+			});
 			dispatch(authActions.loginFailure());
 		}
 	};
@@ -104,14 +104,6 @@ const Login = () => {
 
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Login</span>
-				{error && (
-					<span
-						style={{ alignSelf: "center", color: "red", marginTop: "10px" }}
-					>
-						<h6>{errorMessage}</h6>
-					</span>
-				)}
-
 				<div className="wrapper">
 					<div className="leftside">
 						<form

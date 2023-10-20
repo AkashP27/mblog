@@ -9,6 +9,7 @@ import jwt_decode from "jwt-decode";
 import "../styles/single.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 const override = {
 	display: "block",
@@ -78,11 +79,14 @@ const Single = () => {
 					},
 				});
 				setLoading(false);
-
-				// alert("Post deleted successfully");
 				history.push("/");
+				toast.success("Post deleted successfully", {
+					duration: 5000,
+				});
 			} catch (err) {
-				alert("Could not delete the post");
+				toast.error("Could not delete the post", {
+					duration: 10000,
+				});
 			}
 		}
 	};
@@ -106,10 +110,13 @@ const Single = () => {
 			// window.location.reload();
 			setUpdate(false);
 			setLoading(false);
-
-			// alert("Your Post updated Successfully");
+			toast.success("Post updated..!", {
+				duration: 5000,
+			});
 		} catch (err) {
-			alert("Sorry! Couldn't update");
+			toast.error("Sorry! Couldn't update the post", {
+				duration: 10000,
+			});
 		}
 	};
 

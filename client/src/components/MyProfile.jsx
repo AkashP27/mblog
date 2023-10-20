@@ -9,6 +9,7 @@ import "../styles/myprofile.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
+import { toast } from "react-hot-toast";
 
 const override = {
 	display: "block",
@@ -19,13 +20,9 @@ const MyProfile = () => {
 	let history = useHistory();
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
-	// const [success, setSuccess] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
 	const [posts, setPosts] = useState([]);
 	const [userDetails, setUserDetails] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(false);
-
 	const token = useSelector((state) => state.authentication.token);
 	const dispatch = useDispatch();
 
@@ -105,15 +102,16 @@ const MyProfile = () => {
 					headers: { authorization: `Bearer ${token}` },
 				});
 
-				// localStorage.setItem("token", JSON.stringify(res.data.token));
-				alert("Account has been updated. Please Login again...!");
 				history.push("/");
 				handleLogout();
+				toast.success("Account has been updated. Please Login again...!", {
+					duration: 5000,
+				});
 			}
 		} catch (err) {
-			setError(true);
-			setErrorMessage(err.response.data.message);
-			// console.log(err.response.data.message);
+			toast.error(err.response.data.message, {
+				duration: 5000,
+			});
 		}
 	};
 
@@ -125,12 +123,16 @@ const MyProfile = () => {
 				await axiosInstance.delete(`/user/${decoded.id}`, {
 					headers: { authorization: `Bearer ${token}` },
 				});
-				alert("Account has been deleted...!");
 				history.push("/");
 				handleLogout();
+				toast.success("Account has been deleted...!", {
+					duration: 5000,
+				});
 			}
 		} catch (err) {
-			alert("Couldn't delete your account");
+			toast.error("Couldn't delete your account", {
+				duration: 5000,
+			});
 		}
 	};
 
@@ -168,18 +170,6 @@ const MyProfile = () => {
 							<div className="myprofileheading">
 								<span className="myprofileupdateheading">Account Details</span>
 							</div>
-
-							{error && (
-								<span
-									style={{
-										alignSelf: "center",
-										color: "red",
-										// marginTop: "10px",
-									}}
-								>
-									<h6>{errorMessage}</h6>
-								</span>
-							)}
 
 							<form
 								className="myprofileform"

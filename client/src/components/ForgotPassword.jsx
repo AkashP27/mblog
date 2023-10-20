@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../config";
 import "../styles/login.css";
+import { toast } from "react-hot-toast";
 
 const ForgotPassword = () => {
 	const [submitButton, setSubmitButton] = useState(false);
-
 	const [email, setEmail] = useState();
-	const [errorMessage, setErrorMessage] = useState("");
-	const [successMessage, setSuccessMessage] = useState("");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -17,16 +15,15 @@ const ForgotPassword = () => {
 				email,
 			});
 
-			// console.log(res.data.message);
-			setSuccessMessage(res.data.message);
+			toast.success(res.data.message, {
+				duration: 15000,
+			});
 			setSubmitButton(false);
 			setEmail("");
-
-			// if (res.status === 200) {
-			// }
 		} catch (err) {
-			setErrorMessage(err.response.data.message);
-			// console.log(err.response.data.message);
+			toast.error(err.response.data.message, {
+				duration: 15000,
+			});
 			setSubmitButton(false);
 			// setEmail("");
 		}
@@ -37,21 +34,6 @@ const ForgotPassword = () => {
 			<br />
 			<div className="login max_width m_auto">
 				<span className="loginTitle">Enter your email</span>
-
-				{successMessage ? (
-					<span
-						style={{ alignSelf: "center", marginTop: "10px", color: "green" }}
-					>
-						<h6>{successMessage}</h6>
-					</span>
-				) : (
-					<span
-						style={{ alignSelf: "center", marginTop: "10px", color: "red" }}
-					>
-						<h6>{errorMessage}</h6>
-					</span>
-				)}
-
 				<form
 					method="POST"
 					className="loginForm"

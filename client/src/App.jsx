@@ -15,6 +15,7 @@ import OAuth from "./components/OAuth";
 import PageNotFound from "./components/PageNotFound";
 import "./help.css";
 import { useSelector } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
 	const token = useSelector((state) => state.authentication.token);
@@ -54,6 +55,26 @@ const App = () => {
 					</Route>
 					<Route path="*" exact component={PageNotFound} />
 				</Switch>
+				<Toaster
+					toastOptions={{
+						success: {
+							style: {
+								background: "rgba(216, 239, 234, 1)",
+							},
+						},
+						error: {
+							style: {
+								background: "rgba(241, 211, 206, 1)",
+							},
+						},
+					}}
+					containerStyle={{
+						top: 85,
+						left: 20,
+						bottom: 20,
+						right: 20,
+					}}
+				/>
 			</div>
 		</>
 	);
