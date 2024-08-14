@@ -14,6 +14,10 @@ router
 		postsController.createPost
 	);
 
+router.route("/author/:authorId").get(postsController.getPostsByAuthor);
+
+router.route("/random").get(postsController.getRandomPosts);
+
 router
 	.route("/:id")
 	.get(postsController.getSinglePost)
