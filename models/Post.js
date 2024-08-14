@@ -4,14 +4,29 @@ const PostSchema = new mongoose.Schema(
 	{
 		title: {
 			type: String,
-			required: [true, "Post must have title"],
+			required: true,
 		},
 		desc: {
 			type: String,
-			required: [true, "Post must have description"],
+			required: true,
+		},
+		category: {
+			type: [String],
+			required: true,
+			validate: {
+				validator: function (v) {
+					return Array.isArray(v) && v.length > 0;
+				},
+				message: "Post must have at least one category",
+			},
+		},
+		author: {
+			type: String,
+			required: [true, "Post must have Author"],
 		},
 		imageURL: {
 			type: String,
+			required: true,
 		},
 		cloudinary_id: {
 			type: String,
@@ -19,7 +34,9 @@ const PostSchema = new mongoose.Schema(
 		uploadedBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "USER",
-			required: [true, "Post must have author"],
+		},
+		featured: {
+			type: Boolean,
 		},
 	},
 	{ timestamps: true }
