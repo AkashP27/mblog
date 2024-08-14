@@ -18,14 +18,15 @@ exports.createPost = catchAsync(async (req, res, next) => {
 	if (!req.file) {
 		return next(new AppError(`Please upload a file`, 500));
 	}
-	// console.log(req.file);
 
 	const result = await cloudinary.uploader.upload(req.file.path);
 	const newPost = new Post({
 		title: req.body.title,
 		desc: req.body.desc,
+		category: JSON.parse(req.body.category),
 		imageURL: result.secure_url,
 		cloudinary_id: result.public_id,
+		author: req.body.author,
 		uploadedBy: req.body.uploadedBy,
 	});
 
@@ -39,20 +40,39 @@ exports.createPost = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPost = catchAsync(async (req, res, next) => {
-	const search = req.query.title || "";
-	const query = {
-		title: {
-			$regex: search,
-			$options: "i",
-		},
+	const search = req.query.search || "";
+	const featured = req.query.featured || "";
+	const category = req.query.category || "";
+	const page = parseInt(req.query.page, 10) || 1;
+	const limit = req.query.page ? 6 : 0;
+	const skip = (page - 1) * limit;
+
+	const searchQuery = {
+		...(category && { category }),
+		...(featured && { featured }),
+		$or: [
+			{ title: { $regex: search, $options: "i" } },
+			{ author: { $regex: search, $options: "i" } },
+		],
 	};
 
-	const posts = await Post.find(query)
+	const postCountPromise = Post.countDocuments();
+	const postsPromise = Post.find(searchQuery)
+		.populate({
+			path: "uploadedBy",
+			select: "name avatarURL",
+		})
 		.sort("-createdAt")
+		.limit(limit)
+		.skip(skip)
 		.cache({ key: "POSTS" });
-	// const posts = await Post.find(query).sort({ _id: -1 }).explain();
 
-	if (!posts) {
+	const [postCount, posts] = await Promise.all([
+		postCountPromise,
+		postsPromise,
+	]);
+
+	if (!posts || posts.length === 0) {
 		return next(new AppError("No posts found", 404));
 	}
 
@@ -61,16 +81,17 @@ exports.getAllPost = catchAsync(async (req, res, next) => {
 		results: posts.length,
 		data: {
 			posts,
+			postCount,
 		},
 	});
 });
 
 exports.getSinglePost = catchAsync(async (req, res, next) => {
-	// const post = await Post.findById(req.params.id).populate("uploadedBy");
 	const post = await Post.findById(req.params.id).populate({
 		path: "uploadedBy",
 		select: "-__v -createdAt -updatedAt",
 	});
+
 	if (!post) {
 		return next(new AppError("No post found with that ID", 404));
 	}
@@ -85,14 +106,12 @@ exports.getSinglePost = catchAsync(async (req, res, next) => {
 
 exports.updatePost = catchAsync(async (req, res, next) => {
 	req.user.postKey = "POSTS";
-	// console.log(req.body.desc);
 
 	let unEscapedStr = unEscape(req.body.desc);
-	// console.log(unEscapedStr);
 
 	const post = await Post.findById(req.params.id).populate({
 		path: "uploadedBy",
-		select: "-__v -createdAt -updatedAt",
+		select: "-__v",
 	});
 
 	if (!post) {
@@ -107,7 +126,6 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 		req.params.id,
 		{
 			$set: { title: req.body.title, desc: unEscapedStr },
-			// $set: { desc: unEscapedStr },
 		},
 		{ new: true }
 	);
@@ -122,7 +140,6 @@ exports.updatePost = catchAsync(async (req, res, next) => {
 exports.deletePost = catchAsync(async (req, res, next) => {
 	req.user.postKey = "POSTS";
 
-	// console.log(req.user.name);
 	const post = await Post.findById(req.params.id).populate({
 		path: "uploadedBy",
 		select: "-__v -createdAt -updatedAt",
@@ -141,5 +158,46 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 	res.status(204).json({
 		status: "success",
 		data: null,
+	});
+});
+
+exports.getPostsByAuthor = catchAsync(async (req, res, next) => {
+	const authorId = req.params.authorId;
+
+	const posts = await Post.find({ uploadedBy: authorId })
+		.populate({
+			path: "uploadedBy",
+			select: "name",
+		})
+		.sort("-createdAt");
+
+	res.status(200).json({
+		status: "success",
+		results: posts.length,
+		data: {
+			posts,
+		},
+	});
+});
+
+exports.getRandomPosts = catchAsync(async (req, res, next) => {
+	let query = {};
+	const { exclude } = req.query;
+
+	if (exclude) {
+		query._id = { $ne: exclude };
+	}
+
+	const posts = await Post.aggregate([
+		{ $match: query },
+		{ $sample: { size: 4 } },
+	]);
+
+	res.status(200).json({
+		status: "success",
+		results: posts.length,
+		data: {
+			posts,
+		},
 	});
 });
