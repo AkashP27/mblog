@@ -13,6 +13,11 @@ cloudinary.api.create_upload_preset({
 	name: "mern",
 	folder: "blog",
 });
+
+cloudinary.api.create_upload_preset({
+	name: "mern_avatar",
+	folder: "avatar",
+});
 // .then((result) => console.log(result))
 // .catch((err) => console.error(err));
 
