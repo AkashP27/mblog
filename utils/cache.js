@@ -14,48 +14,52 @@ mongoose.Query.prototype.exec = async function () {
 	if (!this.isCache) {
 		return exec.apply(this, arguments);
 	}
-	// console.log(this.getQuery());
 
-	let redisKey;
-	JSON.stringify(this.getQuery()).startsWith(`{"title"`)
-		? (redisKey = JSON.stringify(
-				Object.assign({}, JSON.stringify(this.getQuery().title.$regex), {
-					collection: this.mongooseCollection.name,
-				})
-		  ))
-		: (redisKey = JSON.stringify(
-				Object.assign({}, this.getQuery(), {
-					collection: this.mongooseCollection.name,
-				})
-		  ));
+	const key = JSON.stringify({
+		query: this.getQuery(),
+		collection: this.mongooseCollection.name,
+		populate: this._mongooseOptions.populate,
+		options: this.options,
+	});
 
-	// console.log(this.hashKey);
-	// console.log(redisKey);
-	const cachedValue = await redis.hget(this.hashKey, redisKey);
+	const cachedValue = await redis.hget(this.hashKey, key);
 
 	if (cachedValue) {
-		// console.log("Caching.....!");
-		// console.log(JSON.parse(cachedValue));
 		const doc = JSON.parse(cachedValue);
-		await redis.expire(this.hashKey, 10 * 60); // 10mins
 
-		// console.log(new this.model(doc));
-		return Array.isArray(doc)
-			? doc.map((d) => new this.model(d))
-			: new this.model(doc);
-		// return JSON.parse(cachedValue);
+		if (Array.isArray(doc)) {
+			// Handle array case
+			const populatedDocs = await Promise.all(
+				doc.map(async (d) => {
+					const modelInstance = new this.model(d);
+					if (this._mongooseOptions.populate) {
+						const { path, select } = this._mongooseOptions.populate.uploadedBy;
+						await modelInstance.populate({ path, select }).execPopulate();
+					}
+					return modelInstance;
+				})
+			);
+			return populatedDocs;
+		} else {
+			// Handle object case
+			const modelInstance = new this.model(doc);
+			if (this._mongooseOptions.populate) {
+				const { path, select } = this._mongooseOptions.populate.uploadedBy;
+				await modelInstance.populate({ path, select }).execPopulate();
+			}
+			return modelInstance;
+		}
 	}
 
 	const result = await exec.apply(this, arguments);
-	// console.log(result);
-	await redis.hset(this.hashKey, redisKey, JSON.stringify(result));
-	await redis.expire(this.hashKey, 10 * 60); // 10mins
+
+	await redis.hset(this.hashKey, key, JSON.stringify(result));
+	await redis.expire(this.hashKey, 10 * 60); // 10 minutes
 	return result;
 };
 
 module.exports = {
 	async clearHash(hashKey) {
-		// console.log("called delete");
 		redis.del(JSON.stringify(hashKey));
 	},
 };
