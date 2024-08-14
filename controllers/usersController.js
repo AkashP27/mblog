@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const cloudinary = require("../utils/cloudinary");
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
 	const users = await User.find().sort({ id: -1 }).explain();
@@ -51,24 +52,32 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsync(async (req, res, next) => {
+	req.user.postKey = "POSTS";
+
 	if (req.body.password) {
 		return next(new AppError("This route is not for password update", 400));
 	}
 
 	const { name, email } = req.body;
 
-	// if (!name || !email) {
-	// 	return next(new AppError("Fields cannot be empty", 400));
-	// }
-
 	if (JSON.stringify(req.user._id) !== JSON.stringify(req.params.id)) {
 		return next(new AppError("You can update only your account", 401));
+	}
+
+	const updateData = {};
+	if (name) updateData.name = name;
+	if (email) updateData.email = email;
+	if (req.file) {
+		const result = await cloudinary.uploader.upload(req.file.path, {
+			upload_preset: "mern_avatar",
+		});
+		updateData.avatarURL = result.secure_url;
 	}
 
 	const updatedUser = await User.findByIdAndUpdate(
 		req.params.id,
 		{
-			$set: req.body,
+			$set: updateData,
 		},
 		{
 			new: true,
@@ -105,9 +114,8 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
 	}
 
 	const posts = await Post.find({ uploadedBy: req.params.id })
-		.sort({
-			_id: -1,
-		})
+		.populate({ path: "uploadedBy", select: "name avatarURL" })
+		.sort("-createdAt")
 		.cache({ key: req.user.id });
 
 	res.status(200).json({
