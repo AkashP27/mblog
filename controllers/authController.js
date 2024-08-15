@@ -23,10 +23,6 @@ exports.registerUser = catchAsync(async (req, res, next) => {
 		return next(new AppError("Fields cannot be empty", 400));
 	}
 
-	// if (password.length < 6) {
-	// 	return next(new AppError("Password should be atleast 6 characters", 400));
-	// }
-
 	if (!passwordValidate(password)) {
 		return next(
 			new AppError(
@@ -140,7 +136,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-	// console.log(req.body.email);
 	if (!req.body.email) {
 		return next(new AppError("Please provide an email address", 400));
 	}
@@ -183,7 +178,77 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 	// 3) Send token to user's email
 	const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
 
-	const message = `Forgot your password? Enter your new password here: ${resetURL}\nIf you didn't forget your password, please ignore this email`;
+	const message = `
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<style>
+				body {
+					font-family: Arial, sans-serif;
+				}
+				.email-wrapper {
+					background-color: #e1e5ea;
+					padding: 30px;
+					display: block;
+				}
+				.email {
+					overflow: hidden;
+					width: 540px;
+					max-width: 100%;
+					background-color: white;
+					border-top: 30px solid white;
+					border-bottom: 30px solid white;
+					border-radius: 3px;
+					margin: 0 auto;
+				}
+				.email-content {
+					border-radius: 5px;
+					padding: 20px;
+				}
+				.button {
+					background-color: #36d7b7;
+					color: white !important;
+					padding: 10px 10px;
+					text-decoration: none;
+					border-radius: 5px;
+				}
+				.button:hover {
+					background-color: #076e59;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="email-wrapper">
+				<div class="email">
+					<div align="center">
+						<a href="https://mblog-akash.netlify.app/">
+							<img
+								src="https://res.cloudinary.com/dhct9yoaz/image/upload/v1713189093/vwhvynhbzficphrghjg8.png"
+								width="128px"
+							/>
+						</a>
+						<h1>MULTIPURPOSE BLOG</h1>
+					</div>
+					<div class="email-content">
+						<p>Hello <strong>${user.name}</strong>,</p>
+						<p>
+							We received a request to reset your password for your MBLOG account.
+						</p>
+						<p>
+							If you did not make this request, you can safely ignore this email.
+							Your account is secure.
+						</p>
+						<p>To reset your password, please click on the button below:</p>
+						<p><a class="button" href="${resetURL}">Reset Password</a></p>
+						<p>Please note that this link is valid for 10 minutes only.</p>
+						<p>Thank you,<br />The Mblog Team</p>
+					</div>
+				</div>
+			</div>
+		</body>
+	</html>
+
+	`;
 
 	try {
 		await sendEmail({
@@ -208,10 +273,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-	// if (!req.body.password) {
-	// 	return next(new AppError("Please enter your password", 400));
-	// }
-
 	if (!passwordValidate(req.body.password)) {
 		return next(
 			new AppError(
@@ -220,10 +281,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 			)
 		);
 	}
-
-	// if (req.body.password.length < 6) {
-	// 	return next(new AppError("Password should be atleast 6 characters", 400));
-	// }
 
 	// 1) Get user based on token
 	const hashedToken = crypto
@@ -262,9 +319,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 			)
 		);
 	}
-	// if (req.body.newPassword.length < 6) {
-	// 	return next(new AppError("Password should be atleast 6 characters", 400));
-	// }
+
 	const user = await User.findById(req.user._id).select("+password +oAuth");
 
 	if (user.oAuth) {
