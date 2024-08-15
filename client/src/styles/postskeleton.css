@@ -1,0 +1,257 @@
+.post-skeleton-container {
+	display: flex;
+	z-index: 0;
+}
+
+.post-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	border-radius: 10px;
+	width: 75%;
+}
+
+.featured-wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 25%;
+	top: 10rem;
+	position: sticky;
+	height: 45vh;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	z-index: 0;
+}
+
+.post-skeleton {
+	width: 45%;
+	height: 340px;
+	margin: 0px 12px 30px 12px;
+	animation: skeleton 1s ease infinite alternate;
+}
+
+.featured-skeleton {
+	animation: skeleton 1s ease infinite alternate;
+}
+
+@keyframes skeleton {
+	to {
+		opacity: 0.5;
+	}
+}
+
+.post-skeleton-img {
+	background-color: rgb(209, 237, 231);
+	width: 100%;
+	height: 200px;
+	margin-bottom: 10px;
+	border-radius: 0.5rem;
+}
+
+.post-skeleton-info {
+	margin-bottom: 10px;
+}
+
+.post-skeleton-title {
+	background-color: rgb(209, 237, 231);
+	height: 25px;
+	width: 100%;
+	margin-bottom: 10px;
+	border-radius: 0.5rem;
+}
+
+.post-skeleton-author-date-container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+.post-skeleton-author-avatar,
+.post-skeleton-author,
+.post-skeleton-date,
+.post-skeleton-desc {
+	background-color: rgb(209, 237, 231);
+	height: 25px;
+	width: 30%;
+	border-radius: 0.5rem;
+}
+
+.post-skeleton-author-avatar {
+	border-radius: 50%;
+	height: 32px;
+	width: 32px;
+}
+
+.post-skeleton-author {
+	margin-right: auto;
+	margin-left: 8px;
+}
+
+.post-skeleton-desc {
+	height: 30px;
+	width: 100%;
+}
+
+.post-skeleton-featured-posts {
+	padding: 20px 0 10px 0;
+}
+
+.post-skeleton-featured-category {
+	display: flex;
+}
+
+.post-skeleton-featured-category-1,
+.post-skeleton-featured-category-2 {
+	border-radius: 0.5rem;
+	margin: 0px 4px 4px 0px;
+	height: 15px;
+	width: 20%;
+	background-color: rgb(209, 237, 231);
+}
+
+.post-skeleton-featured-title {
+	margin-top: 4px;
+	display: flex;
+}
+
+.post-skeleton-featured-image {
+	border-radius: 50%;
+	height: 26px;
+	width: 26px;
+	background-color: rgb(209, 237, 231);
+}
+
+.post-skeleton-featured-sub-title {
+	height: 26px;
+	width: 60%;
+	margin-left: 5px;
+	border-radius: 0.5rem;
+	background-color: rgb(209, 237, 231);
+}
+
+.post-skeleton-featured-info {
+	display: flex;
+	align-items: center;
+	margin-top: 8px;
+}
+
+.post-skeleton-featured-author,
+.post-skeleton-featured-date {
+	height: 20px;
+	width: 35%;
+	margin-left: 5px;
+	border-radius: 0.5rem;
+	background-color: rgb(209, 237, 231);
+}
+
+/* Category List Skeleton */
+.category-list-skeleton {
+	position: sticky;
+	top: 4.5rem;
+	height: 4rem;
+	background: rgb(247, 255, 255);
+	box-shadow: 0 0 4px #345aca66;
+	border-radius: 8px;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+}
+
+.category-list-skeleton .scroll-container {
+	display: flex;
+	gap: 10px;
+	overflow-x: hidden;
+	padding: 10px;
+}
+
+.category-skeleton {
+	width: 90px;
+	height: 43px;
+	margin: 10px 10px 40px 0px;
+	background-color: rgb(209, 237, 231);
+	border-radius: 5px;
+	animation: skeleton 1s ease infinite alternate;
+}
+
+@keyframes skeleton {
+	to {
+		opacity: 0.5;
+	}
+}
+
+.user-details-skeleton {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	animation: skeleton 1s ease infinite alternate;
+	margin: 20px 0;
+}
+
+.user-details-skeleton-avatar {
+	background-color: rgb(209, 237, 231);
+	height: 128px;
+	width: 128px;
+	border-radius: 50%;
+	margin-bottom: 20px;
+}
+
+.user-details-skeleton-name,
+.user-details-skeleton-email,
+.user-details-skeleton-post-count {
+	background-color: rgb(209, 237, 231);
+	height: 25px;
+	width: 220px;
+	border-radius: 0.5rem;
+	margin-bottom: 10px;
+}
+
+.post-skeleton-container.my-profile .post-wrapper {
+	width: 100%;
+}
+
+@media (max-width: 893px) {
+	.post-skeleton {
+		width: 100%;
+	}
+}
+
+@media (max-width: 785px) {
+	.post-skeleton-container {
+		flex-direction: column;
+	}
+
+	.post-wrapper,
+	.featured-wrapper {
+		width: 100%;
+	}
+
+	.featured-wrapper {
+		height: auto;
+	}
+
+	.post-skeleton {
+		width: 44%;
+	}
+}
+
+@media (max-width: 625px) {
+	.post-skeleton {
+		width: 100%;
+		margin: 0px 0px 40px 0px;
+	}
+}
+
+@media (max-width: 520px) {
+	.post-skeleton {
+		width: 95%;
+		margin: 0px 10px 40px 10px;
+	}
+}
+
+@media (max-width: 400px) {
+	.post-skeleton {
+		width: 97%;
+		margin: 0px 5x 40px 5px;
+	}
+}
