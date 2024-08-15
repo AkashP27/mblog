@@ -9,11 +9,13 @@ const qs = require("qs");
 
 const saveOauthUserInDB = async (oAuthUser) => {
 	try {
+		const avatarURL = oAuthUser.picture || oAuthUser.avatar_url || "";
 		const user = await User.findOneAndUpdate(
 			{ email: oAuthUser.email },
 			{
 				email: oAuthUser.email,
 				name: oAuthUser.name,
+				avatarURL: avatarURL,
 			},
 			{
 				upsert: true,
@@ -39,7 +41,6 @@ const saveOauthUserInDB = async (oAuthUser) => {
 exports.googleAuth = catchAsync(async (req, res, next) => {
 	// get auth code from query string
 	const code = req.query.code;
-	// console.log(code);
 
 	const url = "https://oauth2.googleapis.com/token";
 
@@ -53,11 +54,9 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 
 	// get id & access token using auth code
 	const { id_token, access_token } = await getOAuthTokens(url, values);
-	// // console.log({ id_token, access_token });
 
 	// get user using token
 	const googleUser = jwt.decode(id_token);
-	// console.log(googleUser);
 
 	if (!googleUser.email_verified) {
 		return next(new AppError("Google account is not verified", 403));
@@ -88,7 +87,6 @@ exports.googleAuth = catchAsync(async (req, res, next) => {
 exports.githubAuth = catchAsync(async (req, res, next) => {
 	// get auth code from query string
 	const code = req.query.code;
-	// console.log(code);
 	const url = "https://github.com/login/oauth/access_token";
 
 	const values = {
@@ -101,20 +99,16 @@ exports.githubAuth = catchAsync(async (req, res, next) => {
 
 	// get access token using auth code
 	const access_token = await getOAuthTokens(url, values);
-	// console.log(access_token);
 
 	const decoded = qs.parse(access_token);
-	// console.log(decoded);
 	const accessToken = decoded.access_token;
 
 	// get user using access token
-
 	const response = await axios.get("https://api.github.com/user", {
 		headers: { Authorization: `Bearer ${accessToken}` },
 	});
 
 	const githubUser = response.data;
-	// console.log(githubUser);
 
 	if (!githubUser.email) {
 		return next(new AppError("You didn't provide Email address to github..!"));
@@ -145,7 +139,6 @@ exports.githubAuth = catchAsync(async (req, res, next) => {
 exports.linkedInAuth = catchAsync(async (req, res, next) => {
 	// get auth code from query string
 	const code = req.query.code;
-	// console.log(code);
 	const url = "https://www.linkedin.com/oauth/v2/accessToken";
 
 	const values = {
@@ -158,7 +151,6 @@ exports.linkedInAuth = catchAsync(async (req, res, next) => {
 
 	// get access token using auth code
 	const { access_token } = await getOAuthTokens(url, values);
-	// console.log(access_token);
 
 	// get user using access token
 	const response = await axios.get("https://api.linkedin.com/v2/userinfo", {
@@ -166,9 +158,10 @@ exports.linkedInAuth = catchAsync(async (req, res, next) => {
 	});
 
 	const linkedInUser = response.data;
-	// console.log(linkedInUser);
-	linkedInUser.name = linkedInUser.given_name + " " + linkedInUser.family_name;
-	// console.log(linkedInUser.name);
+
+	if (!linkedInUser.email_verified) {
+		return next(new AppError("Email is not verified on linkedIn", 403));
+	}
 
 	const user = await saveOauthUserInDB(linkedInUser);
 
