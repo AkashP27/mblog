@@ -1,88 +1,109 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 import Header from "./Header";
 import Posts from "./Posts";
+import FeaturedPost from "./FeaturedPost";
+import CategoryList from "./CategoryList";
+import Footer from "./Footer";
 import { axiosInstance } from "../config";
-import { NavLink } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader";
-
-const override = {
-	display: "block",
-	margin: "200px auto",
-};
+import PostSkeleton from "./PostSkeleton";
+import Pagination from "./Pagination";
+import { toast } from "react-hot-toast";
 
 const Home = () => {
-	const [posts, setPosts] = useState([]);
+	const [postsData, setPostsData] = useState([]);
 	const [search, setSearch] = useState("");
-
+	const [focused, setFocused] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [page, setPage] = useState(1);
+
+	const { posts: featuredPosts } = useSelector(
+		(state) => state.featuredPosts || {}
+	);
 
 	const searchHandler = (e) => {
-		console.log(e.target.value);
 		setSearch(e.target.value);
+		setPage(1);
 	};
 
 	useEffect(() => {
 		const myAbortController = new AbortController();
+		window.scrollTo(0, 550);
 
 		if (!search) {
 			setLoading(true);
 		}
 
 		const fetchPosts = async () => {
+			setLoading(true);
 			try {
-				const res = await axiosInstance.get(`/posts?title=${search}`, {
-					signal: myAbortController.signal,
-				});
-
+				const res = await axiosInstance.get(
+					`/posts?search=${search}&page=${page}`,
+					{
+						signal: myAbortController.signal,
+					}
+				);
+				setPostsData(res.data.data);
 				setLoading(false);
-
-				// console.log(res.data);
-				setPosts(res.data.data.posts);
 			} catch (err) {
+				setLoading(false);
 				if (!myAbortController.signal.aborted) {
-					console.log(err);
+					toast.error(err.response.data.message);
 				}
 			}
 		};
 
-		fetchPosts();
+		let timeout = setTimeout(() => {
+			fetchPosts();
+		}, 500);
 
 		return () => {
+			clearTimeout(timeout);
 			myAbortController.abort();
 		};
-	}, [search]);
+	}, [search, page]);
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
+
+	const handlePageChange = (newPage) => {
+		setPage(newPage);
+	};
 
 	return (
 		<>
 			<Header />
+			<CategoryList />
 			<div className="post_heading max_width m_auto">
-				<h1 style={{ fontFamily: "'Nunito', sans-serif" }}>Posts</h1>
-				<div className="search">
+				<div className={`search ${focused ? "focused" : ""}`}>
+					<i className="search-icon fas fa-search"></i>
 					<input
 						type="search"
-						placeholder="Search for post title..."
+						placeholder="Search by post title or author..."
 						onChange={searchHandler}
+						onFocus={() => setFocused(true)}
+						onBlur={() => setFocused(false)}
 					/>
 				</div>
-				<NavLink className="btnn" to="/write">
+				<NavLink
+					className="btnn"
+					to="/write"
+					onClick={() => localStorage.setItem("activeLink", "/write")}
+				>
 					Create Post
 				</NavLink>
 			</div>
 			{loading ? (
-				<ClipLoader
-					color={"#36d7b7"}
-					// loading={loading}
-					cssOverride={override}
-					size={50}
-					width={100}
-					display="block"
-					aria-label="Loading Spinner"
-					data-testid="loader"
-				/>
+				<PostSkeleton type="home" postCount={6} featureCount={3} />
 			) : (
 				<>
-					{posts.length > 0 ? (
-						<Posts posts={posts} />
+					{postsData?.posts?.length > 0 ? (
+						<div className="post_container max_width m_auto">
+							<Posts posts={postsData.posts} />
+							<FeaturedPost posts={featuredPosts} />
+						</div>
 					) : (
 						<div
 							style={{
@@ -93,7 +114,6 @@ const Home = () => {
 						>
 							<h1
 								style={{
-									fontFamily: "'Nunito', sans-serif",
 									marginBottom: "450px",
 								}}
 							>
@@ -101,8 +121,16 @@ const Home = () => {
 							</h1>
 						</div>
 					)}
+					<div style={{ display: search ? "none" : "block" }}>
+						<Pagination
+							currentPage={page}
+							onPageChange={handlePageChange}
+							totalResults={postsData.postCount}
+						/>
+					</div>
 				</>
 			)}
+			<Footer />
 		</>
 	);
 };
