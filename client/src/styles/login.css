@@ -1,18 +1,25 @@
 .login {
 	height: 100%;
-	width: 100%;
-	background-color: rgb(250, 249, 249);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	font-family: "Nunito", sans-serif;
-	border-radius: 20px;
+	border-radius: 10px;
+}
+
+.login a {
+	font-size: 15px;
+	color: rgb(98, 155, 129);
+}
+
+.login a:hover {
+	color: rgb(9, 197, 113);
 }
 
 .loginTitle {
-	font-size: 50px;
-	font-family: "Nunito", sans-serif;
+	font-size: 40px;
+	margin-bottom: 10px;
+	font-weight: 500;
 }
 
 .wrapper {
@@ -20,7 +27,6 @@
 	height: 75%;
 	display: flex;
 	align-items: center;
-	margin-top: 2%;
 }
 
 .leftside,
@@ -29,41 +35,97 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding: 10px;
 }
 
 .loginForm {
-	margin-top: 20px;
+	width: 250px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 }
 
-.loginForm > label {
-	margin: 10px 0;
+.loginInputWrapper {
+	margin-bottom: 20px;
+	width: 100%;
 }
 
 .loginInput {
-	padding: 10px;
-	background-color: white;
-	border: none;
-	margin-bottom: 2px;
+	position: relative;
+}
+
+.loginInput i {
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	transform: translateY(-50%);
+	color: #999;
+	font-size: 16px;
+	transition: color 0.3s ease-in-out;
+}
+
+.loginInput input {
+	width: 100%;
+	padding: 10px 10px 10px 35px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	font-size: 16px;
+	transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.loginInput input:hover {
+	border-color: rgba(0, 0, 0, 0.5);
+}
+
+.loginInput input:focus {
+	border-color: rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+	outline: none;
+}
+
+.loginInput input.error {
+	border-color: #ff4d4f;
+}
+
+.togglePassword {
+	position: absolute;
+	top: 50%;
+	right: 40px;
+	transform: translateY(-50%);
+	cursor: pointer;
+	color: #999;
+	font-size: 16px;
+	transition: color 0.3s ease-in-out;
+}
+
+.togglePassword i:hover {
+	color: #333;
+}
+
+.error {
+	color: #ff4d4f;
+	font-size: 12px;
+	display: block;
+	font-style: italic;
 }
 
 .loginButton {
-	margin-top: 20px;
 	margin-bottom: 20px;
 	cursor: pointer;
-	background-color: #489cb1;
+	background: radial-gradient(
+		98.41% 123.96% at 0% 16.13%,
+		rgb(100, 167, 225) 0%,
+		rgb(36, 109, 131) 95.83%
+	);
 	border: none;
 	color: white;
 	border-radius: 3px;
-	padding: 10px 12px 10px 12px;
-	width: 87%;
+	width: 250px;
+	padding: 10px;
 }
 
 .loginButton:hover {
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
-	background-color: #1d839c;
 }
 
 .loginButton:disabled {
@@ -76,9 +138,10 @@
 	justify-content: center;
 }
 
-.leftside a {
-	font-size: 15px;
-	color: rgb(98, 155, 129);
+.left-bottom p {
+	color: #000000;
+	margin-bottom: 10px;
+	margin-right: 6px;
 }
 
 .center {
@@ -94,8 +157,7 @@
 	border-radius: 50%;
 	padding: 10px;
 	color: gray;
-	background-color: white;
-	font-weight: bold;
+	font-weight: 900;
 }
 
 .rightside {
@@ -106,27 +168,39 @@
 }
 
 .oauthloginButton {
-	width: 206px;
-	padding: 11px 11px;
+	width: 250px;
+	padding: 10px 0px;
 	border-radius: 3px;
 	color: white;
 	display: flex;
 	align-items: center;
-	/* font-weight: bold; */
+	justify-content: center;
 	margin-bottom: 30px;
 	cursor: pointer;
 }
 
 .google {
-	background-color: #e0614a;
+	background: radial-gradient(
+		98.41% 123.96% at 0% 16.13%,
+		#b07d74 0%,
+		#de4a30 95.83%
+	);
 }
 
 .github {
-	background-color: rgb(60, 58, 58);
+	background: radial-gradient(
+		98.41% 123.96% at 0% 16.13%,
+		rgb(147, 143, 143) 0%,
+		rgb(60, 58, 58) 95.83%
+	);
 }
 
 .linkedin {
-	background-color: rgb(0, 119, 181);
+	background: radial-gradient(
+		98.41% 123.96% at 0% 16.13%,
+		rgb(99, 154, 183) 0%,
+		rgb(0, 91, 141) 95.83%
+	);
 }
 
 .google:hover {
@@ -151,26 +225,37 @@
 }
 
 ::placeholder {
-	font-size: 15px;
+	font-size: 16px;
+	color: #999;
+}
+
+@media (max-width: 880px) {
+	.wrapper {
+		width: 95%;
+	}
 }
 
 @media (max-width: 770px) {
+	.wrapper {
+		width: 100%;
+	}
+
+	.loginForm {
+		width: 200px;
+	}
+
 	.loginTitle {
-		font-size: 40px;
+		font-size: 35px;
 	}
-	.loginInput {
-		padding: 8px;
-		background-color: white;
-		border: none;
-		margin-bottom: 2px;
+
+	.loginInput i {
+		font-size: 14px;
 	}
-	/* .loginForm {
-    width: 30%;
-  } */
+
 	.loginButton {
-		margin-top: 20px;
 		border-radius: 3px;
 		padding: 8px;
+		width: 200px;
 	}
 
 	.or {
@@ -178,10 +263,8 @@
 	}
 
 	.oauthloginButton {
-		width: 192px;
-		padding: 10px 4px;
-		border-radius: 3px;
-		margin-bottom: 30px;
+		width: 200px;
+		padding: 10px 6px;
 	}
 
 	.bottom p a {
@@ -193,43 +276,35 @@
 }
 
 @media (max-width: 600px) {
+	.loginForm {
+		width: 250px;
+	}
+
 	.loginTitle {
 		font-size: 30px;
 	}
 
 	.wrapper {
-		width: 80%;
+		width: 95%;
 		height: 75%;
 		display: flex;
 		align-items: center;
-		margin-top: 2%;
 		flex-direction: column;
 	}
 
-	.loginInput {
-		padding: 10px;
-		background-color: white;
-		border: none;
-		margin-bottom: 2px;
-	}
-
-	/* .loginForm {
-    width: 35%;
-  } */
 	.loginButton {
-		margin-top: 20px;
-		border-radius: 3px;
-		padding: 5px;
+		padding: 10px;
+		width: 250px;
 	}
 
 	.or {
-		padding: 1px;
+		padding: 5px;
 		margin-bottom: 20px;
 	}
 
 	.oauthloginButton {
-		width: 198px;
-		padding: 6px 7px;
+		width: 250px;
+		padding: 10px 14px;
 	}
 
 	.bottom p a {
@@ -241,62 +316,22 @@
 }
 
 @media (max-width: 500px) {
-	.loginTitle {
-		font-size: 25px;
-	}
-	.loginInput {
-		padding: 8px;
-		background-color: white;
-		border: none;
-		margin-bottom: 2px;
-	}
 	.loginForm > label {
 		margin: 5px 0;
-	}
-
-	/* .loginForm {
-    width: 40%;
-  } */
-	.loginButton {
-		margin-top: 20px;
-		border-radius: 3px;
-		padding: 3px;
-	}
-
-	.oauthloginButton {
-		width: 190px;
-		padding: 4px 3px;
 	}
 
 	.bottom p a {
 		font-size: 12px;
 	}
+
 	::placeholder {
 		font-size: 14px;
 	}
 }
 
 @media (max-width: 400px) {
-	.loginTitle {
-		font-size: 22px;
-	}
-	.loginInput {
-		padding: 8px;
-		background-color: white;
-		border: none;
-		margin-bottom: 2px;
-	}
 	.loginForm > label {
 		margin: 5px 0;
-	}
-
-	/* .loginForm {
-    width: 50%;
-  } */
-	.loginButton {
-		margin-top: 20px;
-		border-radius: 3px;
-		padding: 3px;
 	}
 
 	.bottom p a {

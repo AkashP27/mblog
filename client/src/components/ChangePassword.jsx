@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { axiosInstance } from "../config";
-import { useHistory } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
+import { useHistory, NavLink } from "react-router-dom";
 import "../styles/login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
 import { toast } from "react-hot-toast";
+import Footer from "./Footer";
 
 const ChangePassword = () => {
 	let history = useHistory();
-	const [submitButton, setSubmitButton] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [currentPassword, setCurrentPassword] = useState();
+	const [currentPasswordVisible, setCurrentPasswordVisible] = useState(false);
 	const [newPassword, setNewPassword] = useState();
+	const [newPasswordVisible, setNewPasswordVisible] = useState(false);
 	const token = useSelector((state) => state.authentication.token);
 	const dispatch = useDispatch();
 
@@ -20,7 +24,7 @@ const ChangePassword = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setSubmitButton(true);
+		setLoading(true);
 		try {
 			const res = await axiosInstance.put(
 				"/auth/update-password",
@@ -30,6 +34,7 @@ const ChangePassword = () => {
 				},
 				{ headers: { authorization: `Bearer ${token}` } }
 			);
+			setLoading(false);
 			history.push("/login");
 			handleLogout();
 			toast.success(res.data.message, {
@@ -39,50 +44,91 @@ const ChangePassword = () => {
 			toast.error(err.response.data.message, {
 				duration: 15000,
 			});
-			setSubmitButton(false);
+			setLoading(false);
 			// setCurrentPassword("");
 			setNewPassword("");
 		}
 	};
 	return (
 		<>
-			<br />
-			<br />
-			<div className="login max_width m_auto">
+			{/* <br />
+			<br /> */}
+			<div style={{ height: "70vh" }} className="login max_width m_auto">
 				<span className="loginTitle">Change your password</span>
-				<form
-					method="POST"
-					className="loginForm"
-					onSubmit={handleSubmit}
-					autoComplete="off"
-				>
-					<input
-						required
-						type="password"
-						className="loginInput"
-						onChange={(e) => setCurrentPassword(e.target.value)}
-						value={currentPassword}
-						placeholder="Enter your current password"
-					/>
-					<input
-						required
-						type="password"
-						className="loginInput"
-						onChange={(e) => setNewPassword(e.target.value)}
-						value={newPassword}
-						placeholder="Enter your new password"
-					/>
-					<button
-						className="loginButton"
-						value="Log In"
-						type="submit"
-						disabled={submitButton}
+				<div style={{ padding: "10px" }}>
+					<form
+						method="POST"
+						className="loginForm"
+						onSubmit={handleSubmit}
+						autoComplete="off"
 					>
-						Change
-					</button>
-					<br />
-				</form>
+						<div className="loginInputWrapper">
+							<div className="loginInput">
+								<i className="fas fa-envelope"></i>
+								<input
+									required
+									type={currentPasswordVisible ? "text" : "password"}
+									onChange={(e) => setCurrentPassword(e.target.value)}
+									value={currentPassword}
+									placeholder="Current password"
+								/>
+								<div
+									className="togglePassword"
+									onClick={() => {
+										setCurrentPasswordVisible(!currentPasswordVisible);
+									}}
+								>
+									{currentPasswordVisible ? (
+										<i class="fa fa-eye"></i>
+									) : (
+										<i class="fas fa-eye-slash"></i>
+									)}
+								</div>
+							</div>
+						</div>
+
+						<div className="loginInputWrapper">
+							<div className="loginInput">
+								<i className="fas fa-envelope"></i>
+								<input
+									required
+									type={newPasswordVisible ? "text" : "password"}
+									onChange={(e) => setNewPassword(e.target.value)}
+									value={newPassword}
+									placeholder="New password"
+								/>
+								<div
+									className="togglePassword"
+									onClick={() => {
+										setNewPasswordVisible(!newPasswordVisible);
+									}}
+								>
+									{newPasswordVisible ? (
+										<i class="fa fa-eye"></i>
+									) : (
+										<i class="fas fa-eye-slash"></i>
+									)}
+								</div>
+							</div>
+						</div>
+						<button
+							className="loginButton"
+							value="Log In"
+							type="submit"
+							disabled={loading}
+						>
+							{loading ? (
+								<ClipLoader size={20} color={"#fff"} loading={true} />
+							) : (
+								"Change"
+							)}
+						</button>
+						<NavLink to="/myprofile">Go back to MyProfile</NavLink>
+						<br />
+					</form>
+				</div>
 			</div>
+			<Footer />
 		</>
 	);
 };

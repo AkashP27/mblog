@@ -3,9 +3,20 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin-top: 15%;
+	padding: 10px;
+	height: 60vh;
+}
+
+.page-not-found h2,
+.page-not-found p,
+.page-not-found h5 {
+	margin-bottom: 20px;
 }
 
 .page-not-found a {
 	color: rgb(98, 155, 129);
+}
+
+.page-not-found a:hover {
+	color: rgb(9, 197, 113);
 }

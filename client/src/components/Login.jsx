@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
-// import "./index.css";
+import ClipLoader from "react-spinners/ClipLoader";
 import "../styles/login.css";
 import Google from "../images/google.png";
 import Github from "../images/github.png";
@@ -9,11 +9,13 @@ import Linkedin from "../images/linkedin.png";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../store/auth-slice";
 import { toast } from "react-hot-toast";
+import Footer from "./Footer";
 
 const Login = () => {
 	const history = useHistory();
-	const userRef = useRef();
-	const passwordRef = useRef();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [passwordVisible, setPasswordVisible] = useState(false);
 	const isFetching = useSelector((state) => state.authentication.isFetching);
 	const dispatch = useDispatch();
 
@@ -76,20 +78,25 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		dispatch(authActions.loginStart());
+		// setLoading(true);
 
 		try {
 			const res = await axiosInstance.post("/auth/login", {
-				email: userRef.current.value,
-				password: passwordRef.current.value,
+				// email: userRef.current.value,
+				// password: passwordRef.current.value,
+				email,
+				password,
 			});
 			// console.log(res);
-
+			// setLoading(false);
 			dispatch(authActions.loginSuccess(res.data.data));
 			history.push("/");
+			localStorage.setItem("activeLink", "/");
 			toast.success(`Welcome ${res.data.data.user.name}`, {
 				duration: 10000,
 			});
 		} catch (err) {
+			// setLoading(false);
 			toast.error(err.response.data.message, {
 				duration: 10000,
 			});
@@ -101,9 +108,8 @@ const Login = () => {
 		<>
 			<br />
 			<br />
-
 			<div className="login max_width m_auto">
-				<span className="loginTitle">Login</span>
+				<span className="loginTitle">Welcome Back</span>
 				<div className="wrapper">
 					<div className="leftside">
 						<form
@@ -112,36 +118,61 @@ const Login = () => {
 							onSubmit={handleSubmit}
 							autoComplete="off"
 						>
-							<input
-								required
-								type="email"
-								className="loginInput"
-								ref={userRef}
-								placeholder="Enter your email"
-							/>
-							<input
-								required
-								type="password"
-								className="loginInput"
-								ref={passwordRef}
-								placeholder="Enter your password"
-							/>
+							<div className="loginInputWrapper">
+								<div className="loginInput">
+									<i className="fas fa-envelope"></i>
+									<input
+										required
+										type="email"
+										placeholder="Email"
+										onChange={(e) => setEmail(e.target.value)}
+										value={email}
+									/>
+								</div>
+							</div>
+							<div className="loginInputWrapper">
+								<div className="loginInput">
+									<i className="fas fa-unlock-alt"></i>
+									<input
+										required
+										type={passwordVisible ? "text" : "password"}
+										placeholder="Password"
+										onChange={(e) => setPassword(e.target.value)}
+										value={password}
+									/>
+									<div
+										className="togglePassword"
+										onClick={() => {
+											setPasswordVisible(!passwordVisible);
+										}}
+									>
+										{passwordVisible ? (
+											<i className="fa fa-eye"></i>
+										) : (
+											<i className="fas fa-eye-slash"></i>
+										)}
+									</div>
+								</div>
+							</div>
 							<button
 								className="loginButton"
-								value="Log In"
 								type="submit"
 								disabled={isFetching}
 							>
-								Login
+								{isFetching ? (
+									<ClipLoader size={15} color={"#fff"} loading={true} />
+								) : (
+									"Login"
+								)}
 							</button>
-							{/* <br /> */}
 						</form>
+
 						<div className="left-bottom">
-							<p style={{ color: "black !important" }}>New User?</p>
+							<p>New User?</p>
 							<NavLink to="/register">Register</NavLink>
 						</div>
 						<div className="left-bottom">
-							<p style={{ color: "black !important" }}>Forgot password? </p>
+							<p>Forgot password? </p>
 							<NavLink to="/forgot-password">Click here</NavLink>
 						</div>
 					</div>
@@ -150,7 +181,7 @@ const Login = () => {
 						<div className="or">OR</div>
 					</div>
 
-					<div class="rightside">
+					<div className="rightside">
 						<div className="oauthloginButton google" onClick={getGoogleAuthUrl}>
 							<img src={Google} alt="" className="icon" />
 							Signin with Google
@@ -169,6 +200,9 @@ const Login = () => {
 					</div>
 				</div>
 			</div>
+			<br />
+			<br />
+			<Footer />
 		</>
 	);
 };

@@ -1,21 +1,23 @@
 .single {
-	margin-top: 15px;
+	margin-top: 40px;
 	display: flex;
-	flex-direction: column;
-	font-family: "Nunito", sans-serif;
+}
+
+.singlePostWrapper {
+	width: 75%;
+	padding-right: 40px;
 }
 
 .singlePostImg {
 	width: 100%;
-	height: 431px;
-	object-fit: cover;
-	border-radius: 10px;
+	height: 400px;
+	border-radius: 5px;
 }
 
 .singlePostTitle {
 	text-align: center;
-	margin: 20px;
 	font-size: 2.5rem;
+	margin: 20px 0px 0px 0px;
 }
 
 .singlePostTitleInput {
@@ -34,10 +36,9 @@
 }
 
 .singlePostEdit {
-	margin-top: 50px;
-	margin-bottom: 20px;
 	float: right;
 	font-size: 20px;
+	margin-top: 10px;
 }
 
 .singlePostIcon {
@@ -54,17 +55,69 @@
 }
 
 .singlePostInfo {
-	margin-bottom: 20px;
+	width: 100%;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
 	font-size: 20px;
-	line-height: 35px;
-	font-family: "Nunito", sans-serif;
+	margin: 20px 0px;
+}
+
+.singlePostInfo i {
+	color: rgb(71 85 105);
+}
+
+.singlePostAuthor {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.singlePostAuthorName::after {
+	content: "";
+	position: absolute;
+	left: 40px;
+	bottom: 2px;
+	width: 0;
+	height: 2px;
+	background-color: rgb(32, 78, 119);
+	transition: width 0.3s ease;
+}
+
+.singlePostAuthor:hover .singlePostAuthorName::after {
+	width: 80%;
+}
+
+.singlePostAuthorName {
+	margin-left: 10px;
+	margin-bottom: 0px;
+}
+
+.singlePostReadingTime {
+	font-style: italic;
 }
 
 .singlePostDesc {
 	font-size: 18px;
-	line-height: 36.5px;
+	line-height: 30px;
+}
+
+.ql-editor {
+	font-size: 18px;
+	line-height: 30px;
+}
+
+.singlePostDesc pre {
+	width: auto;
+	background-color: #1e293b;
+	border: 1px solid rgb(61, 69, 83);
+	color: #e8e7e7;
+	white-space: pre-wrap;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 
 .singlePostDescInput {
@@ -81,7 +134,11 @@
 
 .singlePostButton {
 	border: none;
-	background-color: teal;
+	background: radial-gradient(
+		98.41% 123.96% at 0% 16.13%,
+		rgb(100, 167, 225) 0%,
+		rgb(36, 109, 131) 95.83%
+	);
 	padding: 5px;
 	width: 100px;
 	color: white;
@@ -95,28 +152,87 @@
 	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-@media (max-width: 770px) {
+.single-right h1 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.single-categories {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.single-category {
+	background-color: #f1f1f1;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 0px 15px;
+	margin: 0px 10px 10px 0;
+	font-size: 16px;
+}
+
+@media (max-width: 1010px) {
+	.singlePostWrapper {
+		padding-right: 20px;
+	}
+}
+
+@media (max-width: 920px) {
+	.singlePostWrapper {
+		width: 70%;
+	}
+
 	.singlePostImg {
-		height: 400px;
-		border-radius: 10px;
+		height: 350px;
 	}
 
 	.singlePostTitle {
 		font-size: 2.4rem;
 	}
 
+	.singlePostDesc {
+		font-size: 17px;
+		line-height: 27px;
+	}
+
+	.ql-editor {
+		font-size: 17px;
+		line-height: 27px;
+	}
+}
+
+@media (max-width: 785px) {
+	.single {
+		width: 85vw;
+		flex-direction: column;
+	}
+
+	.singlePostWrapper {
+		width: 100%;
+		padding: 0px;
+	}
+
+	.singlePostImg {
+		width: 85vw;
+		height: 300px;
+	}
+
 	.singlePostTitleInput {
 		font-size: 27px;
 	}
+
 	.singlePostInfo {
-		margin-bottom: 20px;
-		font-size: 17px;
-		line-height: 35px;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.singlePostDesc {
-		font-size: 18px;
-		line-height: 34.5px;
+		line-height: 25px;
+	}
+
+	.ql-editor {
+		line-height: 25px;
 	}
 
 	.singlePostDescInput {
@@ -125,25 +241,35 @@
 		height: 100vh;
 	}
 
+	.ql-editor {
+		font-size: 18px;
+		line-height: 30px;
+	}
+
 	.singlePostEdit {
 		font-size: 18px;
+		margin-top: 10px;
 	}
 
 	.singlePostButton {
 		padding: 4px;
 		width: 80px;
-		margin-top: 20px;
 	}
 }
 
 @media (max-width: 600px) {
+	.single {
+		width: 90vw;
+	}
+
 	.singlePostImg {
-		height: 370px;
-		border-radius: 10px;
+		width: 90vw;
+		height: 270px;
 	}
 
 	.singlePostTitle {
-		font-size: 2.3rem;
+		font-size: 2rem;
+		margin: 20px 0px 0px 0px;
 	}
 
 	.singlePostTitleInput {
@@ -151,14 +277,15 @@
 	}
 
 	.singlePostInfo {
-		margin-bottom: 20px;
-		font-size: 15px;
-		line-height: 35px;
+		font-size: 18px;
 	}
 
 	.singlePostDesc {
 		font-size: 16px;
-		line-height: 32.5px;
+	}
+
+	.ql-editor {
+		font-size: 16px;
 	}
 
 	.singlePostDescInput {
@@ -174,33 +301,34 @@
 	.singlePostButton {
 		padding: 3px;
 		width: 70px;
-		margin-top: 20px;
 	}
 }
 
 @media (max-width: 500px) {
+	.single {
+		width: 95vw;
+	}
+
 	.singlePostImg {
-		height: 340px;
-		border-radius: 10px;
+		width: 95vw;
+		height: 250px;
 	}
 
 	.singlePostTitle {
-		font-size: 2.1rem;
+		font-size: 1.5rem;
+		margin: 10px 0px 0px 0px;
 	}
 
 	.singlePostTitleInput {
 		font-size: 20px;
 	}
 
-	.singlePostInfo {
-		margin-bottom: 20px;
-		font-size: 11px;
-		line-height: 35px;
+	.singlePostDesc {
+		line-height: 24px;
 	}
 
-	.singlePostDesc {
-		font-size: 14px;
-		line-height: 29.5px;
+	.ql-editor {
+		line-height: 24px;
 	}
 
 	.singlePostDescInput {
@@ -208,57 +336,20 @@
 		line-height: 29.5px;
 		height: 100vh;
 	}
-
-	.singlePostEdit {
-		font-size: 14px;
-	}
-
-	.singlePostButton {
-		padding: 2px;
-		width: 60px;
-		margin-top: 20px;
-	}
 }
 
 @media (max-width: 400px) {
 	.singlePostImg {
-		height: 310px;
-		border-radius: 10px;
-	}
-
-	.singlePostTitle {
-		font-size: 2rem;
+		height: 220px;
 	}
 
 	.singlePostTitleInput {
 		font-size: 18px;
 	}
 
-	.singlePostInfo {
-		margin-bottom: 20px;
-		font-size: 9px;
-		line-height: 30px;
-	}
-
-	.singlePostDesc {
-		font-size: 12px;
-		line-height: 25.5px;
-	}
-
 	.singlePostDescInput {
-		font-size: 12px;
-		line-height: 25.5px;
+		font-size: 16px;
+		line-height: 25px;
 		height: 100vh;
-	}
-
-	.singlePostEdit {
-		font-size: 12px;
-	}
-
-	.singlePostButton {
-		font-size: 10px;
-		padding: 2px;
-		width: 50px;
-		margin-top: 20px;
 	}
 }

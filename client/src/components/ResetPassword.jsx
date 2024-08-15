@@ -1,24 +1,28 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
+import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "react-hot-toast";
+import "../styles/login.css";
+import Footer from "./Footer";
 
 const ResetPassword = () => {
 	const history = useHistory();
 	const { token } = useParams();
-	const [submitButton, setSubmitButton] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [password, setPassword] = useState("");
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setSubmitButton(true);
+		setLoading(true);
 
 		try {
 			await axiosInstance.put(`/auth/reset-password/${token}`, {
 				password,
 			});
 
-			setSubmitButton(false);
+			setLoading(false);
 			history.push("/login");
 			toast.success("Password changed successfully. Please Login again.", {
 				duration: 10000,
@@ -27,41 +31,63 @@ const ResetPassword = () => {
 			toast.error(err.response.data.message, {
 				duration: 15000,
 			});
-			setSubmitButton(false);
+			setLoading(false);
 		}
 	};
 	return (
 		<>
-			<br />
-			<br />
-			<div className="login max_width m_auto">
-				<span className="loginTitle">Enter your new password</span>
-
-				<form
-					method="POST"
-					className="loginForm"
-					onSubmit={handleSubmit}
-					autoComplete="off"
-				>
-					<input
-						required
-						type="password"
-						className="loginInput"
-						onChange={(e) => setPassword(e.target.value)}
-						value={password}
-						placeholder="Enter your new password"
-					/>
-					<button
-						className="loginButton"
-						value="Log In"
-						type="submit"
-						disabled={submitButton}
+			{/* <br />
+			<br /> */}
+			<div style={{ height: "70vh" }} className="login max_width m_auto">
+				<span className="loginTitle">New password</span>
+				<div style={{ padding: "10px" }}>
+					<form
+						method="POST"
+						className="loginForm"
+						onSubmit={handleSubmit}
+						autoComplete="off"
 					>
-						Send
-					</button>
-					<br />
-				</form>
+						<div className="loginInputWrapper">
+							<div className="loginInput">
+								<i className="fas fa-envelope"></i>
+								<input
+									required
+									type={passwordVisible ? "text" : "password"}
+									onChange={(e) => setPassword(e.target.value)}
+									value={password}
+									placeholder="Enter new password"
+								/>
+								<div
+									className="togglePassword"
+									onClick={() => {
+										setPasswordVisible(!passwordVisible);
+									}}
+								>
+									{passwordVisible ? (
+										<i class="fa fa-eye"></i>
+									) : (
+										<i class="fas fa-eye-slash"></i>
+									)}
+								</div>
+							</div>
+						</div>
+						<button
+							className="loginButton"
+							value="Log In"
+							type="submit"
+							disabled={loading}
+						>
+							{loading ? (
+								<ClipLoader size={20} color={"#fff"} loading={true} />
+							) : (
+								"Submit"
+							)}
+						</button>
+						<br />
+					</form>
+				</div>
 			</div>
+			<Footer />
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { axiosInstance } from "../config";
 import jwt_decode from "jwt-decode";
@@ -6,14 +6,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../index.css";
 import "../styles/write.css";
-import ClipLoader from "react-spinners/ClipLoader";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-
-const override = {
-	display: "block",
-	margin: "200px auto",
-};
+import categories from "../utils/category";
+import CircularProgressBar from "./CircularProgressBar";
 
 const modules = {
 	toolbar: [
@@ -24,7 +20,6 @@ const modules = {
 		[{ script: "sub" }, { script: "super" }],
 		["blockquote", "code-block"],
 		[{ list: "ordered" }, { list: "bullet" }],
-		// ["link", "image", "video"],
 		["clean"],
 	],
 };
@@ -37,26 +32,102 @@ const Write = () => {
 	const [file, setFile] = useState(null);
 	const [title, setTitle] = useState("");
 	const [desc, setDesc] = useState("");
+	const [category, setCategory] = useState([]);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(true);
+	const dropdownRef = useRef(null);
+	const [progress, setProgress] = useState(0);
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+		setIsDropdownOpen(false);
+	}, []);
+
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+				setIsDropdownOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [dropdownRef]);
+
+	const handleCategoryChange = (value) => {
+		if (category.length >= 3) {
+			toast.error("You can only select up to 3 categories", {
+				duration: 5000,
+			});
+			return;
+		}
+		if (value && !category.includes(value)) {
+			setCategory((prevCategory) => [...prevCategory, value]);
+			setIsDropdownOpen(false);
+		}
+	};
+
+	const removeCategory = (categoryToRemove) => {
+		setCategory((prevCategory) =>
+			prevCategory.filter((cat) => cat !== categoryToRemove)
+		);
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		if (!file) {
+			toast.error("Please select an image.");
+			return;
+		}
+
+		if (category.length === 0) {
+			toast.error("Please select at least one category.");
+			return;
+		}
+
+		if (!title.trim()) {
+			toast.error("Please enter a title.");
+			return;
+		}
+
+		if (!desc.trim()) {
+			toast.error("Please enter a description.");
+			return;
+		}
+
 		setLoading(true);
+
 		let data = new FormData();
 		data.append("image", file);
 		data.append("title", title);
 		data.append("desc", desc);
+		data.append("author", decoded.name);
 		data.append("uploadedBy", decoded.id);
+		data.append("category", JSON.stringify(category));
 
 		try {
 			const res = await axiosInstance.post("/posts/", data, {
-				headers: { authorization: `Bearer ${token}` },
+				headers: {
+					authorization: `Bearer ${token}`,
+				},
+				onUploadProgress: (progressEvent) => {
+					let percentCompleted = Math.floor(
+						(progressEvent.loaded * 100) / progressEvent.total
+					);
+					// console.log(
+					// 	`${progressEvent.loaded}kb of ${progressEvent.total}kb | ${percentCompleted}%`
+					// );
+					if (percentCompleted <= 100) setProgress(percentCompleted);
+				},
 			});
 			setLoading(false);
-			window.location.replace("/post/" + res.data.data.post._id);
+			window.location.replace("/posts/" + res.data.data.post._id);
 			toast.success("Post created successfully", {
 				duration: 5000,
 			});
 		} catch (err) {
+			setLoading(false);
 			history.push("/");
 			toast.error(`Sorry! Post was not created. ${err.response.data.message}`, {
 				duration: 15000,
@@ -67,16 +138,20 @@ const Write = () => {
 	return (
 		<>
 			{loading ? (
-				<ClipLoader
-					color={"#36d7b7"}
-					// loading={loading}
-					cssOverride={override}
-					size={50}
-					width={100}
-					display="block"
-					aria-label="Loading Spinner"
-					data-testid="loader"
-				/>
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						height: "100vh",
+					}}
+				>
+					<CircularProgressBar
+						progress={progress}
+						size={150}
+						strokeWidth={10}
+					/>
+				</div>
 			) : (
 				<div className="write max_width m_auto">
 					{file && (
@@ -86,7 +161,6 @@ const Write = () => {
 							alt="OK"
 						/>
 					)}
-
 					<form
 						className="writeForm"
 						onSubmit={handleSubmit}
@@ -105,16 +179,63 @@ const Write = () => {
 							<input
 								type="file"
 								id="fileInput"
+								name={file}
 								style={{ display: "none" }}
 								onChange={(e) => setFile(e.target.files[0])}
-							></input>
-							<input
-								type="text"
-								placeholder="Title"
-								className="writeInput "
-								autoFocus={true}
-								onChange={(e) => setTitle(e.target.value)}
 							/>
+
+							<div className="ip_container">
+								<div
+									className={`ip_select-box ${
+										isDropdownOpen ? "focus-within" : ""
+									}`}
+									onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+									ref={dropdownRef}
+								>
+									<div className="select-wrapper">
+										<span className="selected-category">Select category</span>
+										<i className="fa fa-angle-down dropdown-icon"></i>
+									</div>
+									{isDropdownOpen && (
+										<ul
+											className={`dropdown-option ${
+												isDropdownOpen ? "focus-within" : ""
+											}`}
+										>
+											{categories
+												.filter((cat) => cat.value !== "")
+												.map((cat) => (
+													<li
+														key={cat.value}
+														className="dropdown-item"
+														onClick={() => handleCategoryChange(cat.value)}
+													>
+														{cat.label}
+													</li>
+												))}
+										</ul>
+									)}
+								</div>
+								<div className="category-container">
+									{category.map((cat, i) => (
+										<div key={i} className="category-item">
+											{cat}
+											<i
+												className="fas fa-times"
+												onClick={() => removeCategory(cat)}
+											></i>
+										</div>
+									))}
+								</div>
+							</div>
+							<div className="writeInput">
+								<input
+									required
+									type="text"
+									placeholder="Title"
+									onChange={(e) => setTitle(e.target.value)}
+								/>
+							</div>
 							<ReactQuill
 								placeholder="Tell your story"
 								theme="snow"
