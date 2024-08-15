@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { axiosInstance } from "../config";
-import ClipLoader from "react-spinners/ClipLoader";
+import HashLoader from "react-spinners/HashLoader";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth-slice";
 import { toast } from "react-hot-toast";
@@ -54,7 +54,7 @@ const OAuth = () => {
 	return (
 		<div>
 			{loading && (
-				<ClipLoader
+				<HashLoader
 					color={"#36d7b7"}
 					// loading={loading}
 					cssOverride={override}
