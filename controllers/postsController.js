@@ -188,10 +188,15 @@ exports.getRandomPosts = catchAsync(async (req, res, next) => {
 		query._id = { $ne: exclude };
 	}
 
-	const posts = await Post.aggregate([
+	const result = await Post.aggregate([
 		{ $match: query },
-		{ $sample: { size: 4 } },
+		{ $sample: { size: 2 } },
 	]);
+
+	const posts = await Post.populate(result, {
+		path: "uploadedBy",
+		select: "name",
+	});
 
 	res.status(200).json({
 		status: "success",
