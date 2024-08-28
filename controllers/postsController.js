@@ -167,7 +167,7 @@ exports.getPostsByAuthor = catchAsync(async (req, res, next) => {
 	const posts = await Post.find({ uploadedBy: authorId })
 		.populate({
 			path: "uploadedBy",
-			select: "name",
+			select: "name avatarURL",
 		})
 		.sort("-createdAt");
 
