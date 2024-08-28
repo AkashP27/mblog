@@ -1,5 +1,5 @@
 .max_width {
-	max-width: 80vw;
+	max-width: 85vw;
 }
 
 .m_auto {
@@ -11,26 +11,20 @@
 	color: inherit !important;
 }
 
-@media (max-width: 770px) {
-	.max_width {
-		max-width: 85vw;
-	}
-}
-
 @media (max-width: 600px) {
 	.max_width {
-		max-width: 88vw;
+		max-width: 90vw;
 	}
 }
 
 @media (max-width: 500px) {
 	.max_width {
-		max-width: 92vw;
+		max-width: 95vw;
 	}
 }
 
 @media (max-width: 400px) {
 	.max_width {
-		max-width: 95vw;
+		max-width: 97vw;
 	}
 }
